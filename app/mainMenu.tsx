@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import { FlatList, StyleSheet, Text, View } from 'react-native';
+import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import MainMenuOption from '../src/components/MainMenuOption';
 import NewsCard from '../src/components/NewsCard';
 import colors from '../src/styles/colors';
@@ -13,10 +13,10 @@ export default function Page() {
             <View style={styles.header}>
                 <Text style={styles.title}>SisVil</Text>
 
-                <View style={styles.profileContainer}>
+                <TouchableOpacity style={styles.profileContainer} activeOpacity={0.5}>
                     <Ionicons name='person-circle-outline' size={48} color={colors.blue_600} />
                     <Text style={styles.profileText}>Perfil</Text>
-                </View>
+                </TouchableOpacity>
             </View>
 
             <View style={styles.menuContainer}>

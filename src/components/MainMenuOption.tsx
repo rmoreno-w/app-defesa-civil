@@ -1,5 +1,5 @@
 import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 import colors from '../styles/colors';
 import fonts from '../styles/fonts';
 
@@ -9,14 +9,14 @@ interface MainMenuOptionProps {
 }
 export default function MainMenuOption({ icon, option }: MainMenuOptionProps) {
     return (
-        <View style={styles.wrapper}>
+        <TouchableOpacity style={styles.wrapper} activeOpacity={0.5}>
             {icon == 'list' && <MaterialCommunityIcons size={32} color={colors.blue_600} name='list-status' />}
             {icon == 'cloud-rain' && <Feather size={32} color={colors.blue_600} name='cloud-drizzle' />}
             {icon == 'cloud-arrow' && (
                 <MaterialCommunityIcons size={32} color={colors.blue_600} name='weather-cloudy-arrow-right' />
             )}
             <Text style={styles.text}>{option}</Text>
-        </View>
+        </TouchableOpacity>
     );
 }
 

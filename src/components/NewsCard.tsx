@@ -1,11 +1,11 @@
 import { Feather } from '@expo/vector-icons';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import colors from '../styles/colors';
 import fonts from '../styles/fonts';
 
 export default function NewsCard() {
     return (
-        <View style={styles.newsContainer}>
+        <TouchableOpacity style={styles.newsContainer} activeOpacity={0.5}>
             <View style={styles.newsContentContainer}>
                 <Text style={styles.title}>Titulo Notícia</Text>
                 <Text style={styles.dateAndTime}>24/07/2023 - 14:53</Text>
@@ -18,7 +18,7 @@ export default function NewsCard() {
             <View style={styles.iconContainer}>
                 <Feather name='cloud-lightning' size={64} color={colors.blue_600} />
             </View>
-        </View>
+        </TouchableOpacity>
     );
 }
 
