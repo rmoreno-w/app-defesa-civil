@@ -127,6 +127,6 @@ const styles = StyleSheet.create({
         marginRight: 8,
     },
     form: {
-        gap: 12,
+        gap: 16,
     },
 });

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { StyleSheet, Text } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
 import colors from '../styles/colors';
 
@@ -30,7 +30,7 @@ export default function Input({ inputData, setInputFunction, label, placeholder,
     }
 
     return (
-        <>
+        <View style={styles.inputWrapper}>
             <Text style={styles.label}>{label}</Text>
             <TextInput
                 style={[styles.input, isFocused && { borderColor: colors.blue_400 }]}
@@ -41,11 +41,14 @@ export default function Input({ inputData, setInputFunction, label, placeholder,
                 onChangeText={handleInputChange}
                 secureTextEntry={type == 'password'}
             />
-        </>
+        </View>
     );
 }
 
 const styles = StyleSheet.create({
+    inputWrapper: {
+        gap: 6,
+    },
     input: {
         backgroundColor: colors.blue_50,
         borderStyle: 'solid',
@@ -56,6 +59,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         padding: 8,
         borderRadius: 8,
+        // backgroundColor: 'red',
     },
     label: {
         color: colors.blue_50,

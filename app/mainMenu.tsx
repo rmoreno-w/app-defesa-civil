@@ -1,3 +1,4 @@
+import { Ionicons } from '@expo/vector-icons';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
 import MainMenuOption from '../src/components/MainMenuOption';
 import NewsCard from '../src/components/NewsCard';
@@ -9,21 +10,30 @@ export default function Page() {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>SisVil</Text>
+            <View style={styles.header}>
+                <Text style={styles.title}>SisVil</Text>
+
+                <View style={styles.profileContainer}>
+                    <Ionicons name='person-circle-outline' size={48} color={colors.blue_600} />
+                    <Text style={styles.profileText}>Perfil</Text>
+                </View>
+            </View>
 
             <View style={styles.menuContainer}>
-                <Text style={styles.subtitle}>Main Menu</Text>
                 <View style={styles.optionsContainer}>
-                    <MainMenuOption option='Consultar meus incidentes' icon='list' />
-                    <MainMenuOption option='Reportar incidente' icon='cloud' />
+                    <MainMenuOption option='Consultar incidentes' icon='cloud-rain' />
+                    <MainMenuOption option='Ver avisos enviados' icon='list' />
+                    <MainMenuOption option='Enviar aviso à defesa civil' icon='cloud-arrow' />
                 </View>
 
-                <Text>Últimas notícias:</Text>
+                <Text style={styles.subtitle}>Últimas notícias:</Text>
+
                 <FlatList
                     data={[1, 2, 3, 4, 5]}
                     keyExtractor={(newsItem) => String(newsItem)}
                     renderItem={(newsItem) => <NewsCard />}
                     contentContainerStyle={{ gap: 12, paddingBottom: 280 }}
+                    // style={{ backgroundColor: 'yellow' }}
                     showsVerticalScrollIndicator={false}
                 ></FlatList>
             </View>
@@ -38,6 +48,14 @@ const styles = StyleSheet.create({
         paddingHorizontal: 16,
         backgroundColor: colors.blue_50,
     },
+    header: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        borderBottomWidth: 1,
+        borderBottomColor: colors.blue_600,
+        marginBottom: 24,
+    },
     title: {
         // backgroundColor: 'green',
         fontFamily: fonts.heading,
@@ -45,21 +63,32 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         color: colors.blue_800,
     },
+    profileContainer: {
+        alignItems: 'center',
+        padding: 4,
+    },
+    profileText: {
+        color: colors.blue_900,
+    },
     subtitle: {
-        fontFamily: fonts.text,
+        fontFamily: fonts.textBold,
         fontSize: 16,
         color: colors.blue_900,
-        textAlign: 'center',
+        // textAlign: 'center',
         // backgroundColor: 'red',
     },
     menuContainer: {
+        // backgroundColor: 'lightblue',
         gap: 24,
     },
     optionsContainer: {
-        // backgroundColor: 'red',
+        // backgroundColor: 'green',
+        // overflow: 'hidden',
         flexDirection: 'row',
-        gap: 24,
         flexWrap: 'wrap',
         justifyContent: 'space-between',
+        borderBottomWidth: 1,
+        borderBottomColor: colors.blue_600,
+        paddingBottom: 24,
     },
 });

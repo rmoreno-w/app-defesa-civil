@@ -5,13 +5,16 @@ import fonts from '../styles/fonts';
 
 interface MainMenuOptionProps {
     option: string;
-    icon: 'cloud' | 'list';
+    icon: 'cloud-rain' | 'cloud-arrow' | 'list';
 }
 export default function MainMenuOption({ icon, option }: MainMenuOptionProps) {
     return (
         <View style={styles.wrapper}>
             {icon == 'list' && <MaterialCommunityIcons size={32} color={colors.blue_600} name='list-status' />}
-            {icon == 'cloud' && <Feather size={32} color={colors.blue_600} name='cloud-drizzle' />}
+            {icon == 'cloud-rain' && <Feather size={32} color={colors.blue_600} name='cloud-drizzle' />}
+            {icon == 'cloud-arrow' && (
+                <MaterialCommunityIcons size={32} color={colors.blue_600} name='weather-cloudy-arrow-right' />
+            )}
             <Text style={styles.text}>{option}</Text>
         </View>
     );
@@ -19,19 +22,20 @@ export default function MainMenuOption({ icon, option }: MainMenuOptionProps) {
 
 const styles = StyleSheet.create({
     wrapper: {
-        padding: 16,
+        padding: 8,
         borderStyle: 'solid',
         borderWidth: 3,
         borderRadius: 8,
         borderColor: colors.blue_600,
-        gap: 8,
+        gap: 4,
         alignItems: 'center',
         justifyContent: 'space-between',
-        width: '45%',
+        width: '31%',
     },
     text: {
         textAlign: 'center',
         color: colors.blue_600,
         fontFamily: fonts.textBold,
+        fontSize: 12,
     },
 });
