@@ -1,5 +1,6 @@
 import { Pridi_700Bold } from '@expo-google-fonts/pridi';
 import { WorkSans_400Regular, WorkSans_700Bold, useFonts } from '@expo-google-fonts/work-sans';
+import Checkbox from 'expo-checkbox';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
@@ -11,7 +12,10 @@ import fonts from '../src/styles/fonts';
 export default function loginPageLayout() {
     const router = useRouter();
     const [email, setEmail] = useState('');
+    const [isEmailFilled, setIsEmailFilled] = useState(false);
     const [senha, setSenha] = useState('');
+    const [isSenhaFilled, setIsSenhaFilled] = useState(false);
+    const [isCheckboxMarked, setIsCheckboxMarked] = useState(false);
 
     const [fontsLoaded] = useFonts({
         WorkSans_400Regular,
@@ -40,6 +44,7 @@ export default function loginPageLayout() {
                         placeholder='maria@exemplo.com'
                         inputData={email}
                         setInputFunction={setEmail}
+                        setIsInputFilled={setIsEmailFilled}
                     />
                     <Input
                         label='Senha'
@@ -47,9 +52,24 @@ export default function loginPageLayout() {
                         inputData={senha}
                         setInputFunction={setSenha}
                         type='password'
+                        setIsInputFilled={setIsSenhaFilled}
                     />
+                    <View style={styles.checkboxContainer}>
+                        <Checkbox
+                            value={isCheckboxMarked}
+                            disabled={
+                                (!isEmailFilled && !isSenhaFilled) ||
+                                (!isEmailFilled && isSenhaFilled) ||
+                                (isEmailFilled && !isSenhaFilled)
+                            }
+                            style={styles.checkbox}
+                            onValueChange={setIsCheckboxMarked}
+                            color={colors.blue_100}
+                        />
+                        <Text style={styles.checkboxText}>Lembrar meus dados</Text>
+                    </View>
                 </View>
-                <TouchableOpacity style={styles.button} onPress={onButtonPress}>
+                <TouchableOpacity style={styles.button} onPress={onButtonPress} activeOpacity={0.75}>
                     <Text style={styles.buttonText}>Login</Text>
                 </TouchableOpacity>
             </View>
@@ -95,6 +115,16 @@ const styles = StyleSheet.create({
     buttonText: {
         textAlign: 'center',
         color: colors.blue_900,
+    },
+    checkboxContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    checkboxText: {
+        color: colors.blue_50,
+    },
+    checkbox: {
+        marginRight: 8,
     },
     form: {
         gap: 12,

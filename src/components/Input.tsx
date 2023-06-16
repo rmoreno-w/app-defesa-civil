@@ -8,16 +8,16 @@ interface inputProps {
     placeholder: string;
     inputData: string;
     setInputFunction: React.Dispatch<React.SetStateAction<string>>;
+    setIsInputFilled: React.Dispatch<React.SetStateAction<boolean>>;
     type?: 'password' | 'text';
 }
 
-export default function Input({ inputData, setInputFunction, label, placeholder, type }: inputProps) {
+export default function Input({ inputData, setInputFunction, label, placeholder, type, setIsInputFilled }: inputProps) {
     const [isFocused, setIsFocused] = useState(false);
-    const [isFilled, setIsFilled] = useState(false);
 
     function handleInputBlur() {
         setIsFocused(false);
-        setIsFilled(!!inputData);
+        setIsInputFilled(!!inputData);
     }
 
     function handleInputFocus() {
@@ -25,7 +25,7 @@ export default function Input({ inputData, setInputFunction, label, placeholder,
     }
 
     function handleInputChange(value: string) {
-        setIsFilled(!!value);
+        setIsInputFilled(!!value);
         setInputFunction(value);
     }
 

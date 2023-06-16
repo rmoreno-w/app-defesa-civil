@@ -24,6 +24,7 @@ export default function Page() {
                     keyExtractor={(newsItem) => String(newsItem)}
                     renderItem={(newsItem) => <NewsCard />}
                     contentContainerStyle={{ gap: 12, paddingBottom: 280 }}
+                    showsVerticalScrollIndicator={false}
                 ></FlatList>
             </View>
         </View>
