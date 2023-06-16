@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { FlatList, StyleSheet, Text, View } from 'react-native';
 import MainMenuOption from '../src/components/MainMenuOption';
 import NewsCard from '../src/components/NewsCard';
 import colors from '../src/styles/colors';
@@ -19,7 +19,12 @@ export default function Page() {
                 </View>
 
                 <Text>Últimas notícias:</Text>
-                <NewsCard />
+                <FlatList
+                    data={[1, 2, 3, 4, 5]}
+                    keyExtractor={(newsItem) => String(newsItem)}
+                    renderItem={(newsItem) => <NewsCard />}
+                    contentContainerStyle={{ gap: 12, paddingBottom: 280 }}
+                ></FlatList>
             </View>
         </View>
     );

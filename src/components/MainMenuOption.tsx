@@ -1,6 +1,7 @@
 import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 import { StyleSheet, Text, View } from 'react-native';
 import colors from '../styles/colors';
+import fonts from '../styles/fonts';
 
 interface MainMenuOptionProps {
     option: string;
@@ -31,5 +32,6 @@ const styles = StyleSheet.create({
     text: {
         textAlign: 'center',
         color: colors.blue_600,
+        fontFamily: fonts.textBold,
     },
 });

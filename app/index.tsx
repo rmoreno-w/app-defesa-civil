@@ -1,5 +1,5 @@
 import { Pridi_700Bold } from '@expo-google-fonts/pridi';
-import { WorkSans_400Regular, useFonts } from '@expo-google-fonts/work-sans';
+import { WorkSans_400Regular, WorkSans_700Bold, useFonts } from '@expo-google-fonts/work-sans';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
@@ -15,6 +15,7 @@ export default function loginPageLayout() {
 
     const [fontsLoaded] = useFonts({
         WorkSans_400Regular,
+        WorkSans_700Bold,
         Pridi_700Bold,
     });
 

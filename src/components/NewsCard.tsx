@@ -1,12 +1,15 @@
 import { Feather } from '@expo/vector-icons';
 import { StyleSheet, Text, View } from 'react-native';
 import colors from '../styles/colors';
+import fonts from '../styles/fonts';
 
 export default function NewsCard() {
     return (
         <View style={styles.newsContainer}>
-            <View style={styles.subtitleContainer}>
-                <Text style={styles.subtitle} ellipsizeMode='tail' numberOfLines={7}>
+            <View style={styles.newsContentContainer}>
+                <Text style={styles.title}>Titulo Notícia</Text>
+                <Text style={styles.dateAndTime}>24/07/2023 - 14:53</Text>
+                <Text style={styles.content} ellipsizeMode='tail' numberOfLines={4}>
                     Texto da Notícia meio grandinho bó encher Texto da Notícia meio grandinho bó encher Texto da Notícia
                     meio grandinho bó encher Texto da Notícia meio grandinho bó encher Texto da Notícia meio grandinho
                     text text bó encher
@@ -29,18 +32,30 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         overflow: 'hidden',
     },
-    subtitleContainer: {
-        padding: 8,
-        width: '60%',
-        justifyContent: 'center',
+    newsContentContainer: {
+        padding: 12,
+        width: '75%',
+        justifyContent: 'space-between',
+        borderRightWidth: 1,
+        borderRightColor: colors.blue_600,
     },
-    subtitle: {
+    title: {
+        fontFamily: fonts.textBold,
+        fontSize: 16,
+        color: colors.blue_600,
+        // backgroundColor: 'red',
+        textAlignVertical: 'center',
+        // backgroundColor: 'red',
+    },
+    dateAndTime: {
+        fontSize: 10,
+    },
+    content: {
         textAlign: 'justify',
     },
     iconContainer: {
         justifyContent: 'center',
         alignItems: 'center',
-        width: '40%',
-        // backgroundColor: 'red',
+        width: '25%',
     },
 });
