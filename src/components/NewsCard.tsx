@@ -1,11 +1,18 @@
 import { Feather } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import colors from '../styles/colors';
 import fonts from '../styles/fonts';
 
 export default function NewsCard() {
+    const router = useRouter();
+
+    function navigateOnPress() {
+        router.push('/news');
+    }
+
     return (
-        <TouchableOpacity style={styles.newsContainer} activeOpacity={0.5}>
+        <TouchableOpacity style={styles.newsContainer} activeOpacity={0.5} onPress={navigateOnPress}>
             <View style={styles.newsContentContainer}>
                 <Text style={styles.title}>Titulo Notícia</Text>
                 <Text style={styles.dateAndTime}>24/07/2023 - 14:53</Text>

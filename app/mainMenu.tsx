@@ -1,5 +1,5 @@
-import { Ionicons } from '@expo/vector-icons';
-import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { FlatList, StyleSheet, Text, View } from 'react-native';
+import Header from '../src/components/Header';
 import MainMenuOption from '../src/components/MainMenuOption';
 import NewsCard from '../src/components/NewsCard';
 import colors from '../src/styles/colors';
@@ -10,14 +10,7 @@ export default function Page() {
 
     return (
         <View style={styles.container}>
-            <View style={styles.header}>
-                <Text style={styles.title}>SisVil</Text>
-
-                <TouchableOpacity style={styles.profileContainer} activeOpacity={0.5}>
-                    <Ionicons name='person-circle-outline' size={48} color={colors.blue_600} />
-                    <Text style={styles.profileText}>Perfil</Text>
-                </TouchableOpacity>
-            </View>
+            <Header showProfileIcon />
 
             <View style={styles.menuContainer}>
                 <View style={styles.optionsContainer}>
@@ -63,13 +56,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         color: colors.blue_800,
     },
-    profileContainer: {
-        alignItems: 'center',
-        padding: 4,
-    },
-    profileText: {
-        color: colors.blue_900,
-    },
+
     subtitle: {
         fontFamily: fonts.textBold,
         fontSize: 16,
