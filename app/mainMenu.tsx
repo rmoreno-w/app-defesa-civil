@@ -15,8 +15,8 @@ export default function Page() {
             <View style={styles.menuContainer}>
                 <View style={styles.optionsContainer}>
                     <MainMenuOption option='Consultar incidentes' icon='cloud-rain' />
-                    <MainMenuOption option='Ver avisos enviados' icon='list' />
                     <MainMenuOption option='Enviar aviso à defesa civil' icon='cloud-arrow' />
+                    <MainMenuOption option='Ver avisos enviados' icon='list' />
                 </View>
 
                 <Text style={styles.subtitle}>Últimas notícias:</Text>
@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
 
     subtitle: {
         fontFamily: fonts.textBold,
-        fontSize: 16,
+        fontSize: 20,
         color: colors.blue_900,
         // textAlign: 'center',
         // backgroundColor: 'red',

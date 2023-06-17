@@ -1,12 +1,20 @@
 import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import colors from '../styles/colors';
 import fonts from '../styles/fonts';
 
 interface HeaderProps {
+    showCloseIcon?: boolean;
     showProfileIcon?: boolean;
 }
-export default function Header({ showProfileIcon }: HeaderProps) {
+export default function Header({ showCloseIcon, showProfileIcon }: HeaderProps) {
+    const router = useRouter();
+
+    function closeCurrentPage() {
+        router.back();
+    }
+
     return (
         <View style={styles.header}>
             <Text style={styles.title}>SisVil</Text>
@@ -15,6 +23,13 @@ export default function Header({ showProfileIcon }: HeaderProps) {
                 <TouchableOpacity style={styles.profileContainer} activeOpacity={0.5}>
                     <Ionicons name='person-circle-outline' size={48} color={colors.blue_600} />
                     <Text style={styles.profileText}>Perfil</Text>
+                </TouchableOpacity>
+            )}
+
+            {showCloseIcon && (
+                <TouchableOpacity style={styles.profileContainer} activeOpacity={0.5} onPress={closeCurrentPage}>
+                    <Ionicons name='close-outline' size={48} color={colors.blue_600} />
+                    <Text style={styles.profileText}>Fechar</Text>
                 </TouchableOpacity>
             )}
         </View>
