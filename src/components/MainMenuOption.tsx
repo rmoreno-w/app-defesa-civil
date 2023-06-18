@@ -1,4 +1,5 @@
 import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 import colors from '../styles/colors';
 import fonts from '../styles/fonts';
@@ -6,10 +7,17 @@ import fonts from '../styles/fonts';
 interface MainMenuOptionProps {
     option: string;
     icon: 'cloud-rain' | 'cloud-arrow' | 'list';
+    navigateTo: string;
 }
-export default function MainMenuOption({ icon, option }: MainMenuOptionProps) {
+export default function MainMenuOption({ icon, navigateTo, option }: MainMenuOptionProps) {
+    const router = useRouter();
+
+    function navigate() {
+        router.push(navigateTo);
+    }
+
     return (
-        <TouchableOpacity style={styles.wrapper} activeOpacity={0.5}>
+        <TouchableOpacity style={styles.wrapper} activeOpacity={0.5} onPress={navigate}>
             {icon == 'list' && <MaterialCommunityIcons size={32} color={colors.blue_600} name='list-status' />}
             {icon == 'cloud-rain' && <Feather size={32} color={colors.blue_600} name='cloud-drizzle' />}
             {icon == 'cloud-arrow' && (
