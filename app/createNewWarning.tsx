@@ -81,7 +81,7 @@ export default function CreateNewWarning() {
                     </View>
                 </View>
 
-                <TouchableOpacity activeOpacity={0.5} style={styles.button}>
+                <TouchableOpacity activeOpacity={0.8} style={styles.button}>
                     <Text style={styles.buttonText}>Enviar</Text>
                 </TouchableOpacity>
             </View>

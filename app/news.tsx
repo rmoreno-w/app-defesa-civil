@@ -12,7 +12,10 @@ export default function News() {
             <View style={styles.newsBody}>
                 <Text style={styles.newsTitle}>Titulo Notícia</Text>
 
-                <Text style={styles.dateAndTime}>24/07/2023 - 14:53</Text>
+                <View style={styles.dateWrapper}>
+                    <Text style={styles.publishedAt}>Publicada em:</Text>
+                    <Text style={styles.dateAndTime}>24/07/2023 - 14:53</Text>
+                </View>
 
                 <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 70 }}>
                     <Text style={styles.newsContent}>
@@ -99,10 +102,22 @@ const styles = StyleSheet.create({
         fontSize: 32,
         // backgroundColor: 'red',
     },
+    dateWrapper: {
+        flexDirection: 'row',
+        paddingBottom: 4,
+        borderBottomWidth: 1,
+        borderBottomColor: colors.blue_600,
+    },
+    publishedAt: {
+        fontFamily: fonts.textBold,
+        marginRight: 4,
+        fontSize: 14,
+        color: colors.blue_600,
+    },
     dateAndTime: {
-        color: colors.blue_400,
+        color: colors.blue_900,
         fontFamily: fonts.text,
-        fontSize: 16,
+        fontSize: 14,
     },
     newsContent: {
         fontSize: 16,
