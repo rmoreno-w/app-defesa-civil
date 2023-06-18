@@ -14,7 +14,7 @@ export default function Page() {
 
             <View style={styles.menuContainer}>
                 <View style={styles.optionsContainer}>
-                    <MainMenuOption option='Consultar incidentes' icon='cloud-rain' navigateTo='/createNewWarning' />
+                    <MainMenuOption option='Consultar incidentes' icon='cloud-rain' navigateTo='/verifyIncidents' />
                     <MainMenuOption
                         option='Enviar aviso à defesa civil'
                         icon='cloud-arrow'
