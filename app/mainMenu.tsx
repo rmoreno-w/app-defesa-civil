@@ -20,7 +20,7 @@ export default function Page() {
                         icon='cloud-arrow'
                         navigateTo='/createNewWarning'
                     />
-                    <MainMenuOption option='Ver avisos enviados' icon='list' navigateTo='/createNewWarning' />
+                    <MainMenuOption option='Ver avisos enviados' icon='list' navigateTo='/myIncidents' />
                 </View>
 
                 <Text style={styles.subtitle}>Últimas notícias:</Text>
@@ -45,22 +45,6 @@ const styles = StyleSheet.create({
         paddingHorizontal: 16,
         backgroundColor: colors.blue_50,
     },
-    header: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        borderBottomWidth: 1,
-        borderBottomColor: colors.blue_600,
-        marginBottom: 24,
-    },
-    title: {
-        // backgroundColor: 'green',
-        fontFamily: fonts.heading,
-        fontSize: 56,
-        textAlign: 'center',
-        color: colors.blue_800,
-    },
-
     subtitle: {
         fontFamily: fonts.textBold,
         fontSize: 20,

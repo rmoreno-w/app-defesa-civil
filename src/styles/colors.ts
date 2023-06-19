@@ -7,6 +7,6 @@ export default {
     blue_800: '#001f3d',
     blue_900: '#000A14',
     red: '#C81D25',
-    green: '#FFA62B',
-    yellow: '#57A773',
+    yellow: '#FFA62B',
+    green: '#57A773',
 };
