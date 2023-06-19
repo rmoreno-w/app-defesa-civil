@@ -19,7 +19,7 @@ export default function Page() {
                         navigateTo='/verifyIncidents'
                     />
                     <AgentMainMenuOption option='Novo incidente' icon='map' navigateTo='/createNewWarning' />
-                    <AgentMainMenuOption option='Nova notícia' icon='newspaper' navigateTo='/myIncidents' />
+                    <AgentMainMenuOption option='Nova notícia' icon='newspaper' navigateTo='/createNews' />
                     <AgentMainMenuOption option='Feed de notícias' icon='list-news' navigateTo='/newsFeed' />
                     <AgentMainMenuOption
                         option={`Dados meteorológicos ${`\n`}do dia`}

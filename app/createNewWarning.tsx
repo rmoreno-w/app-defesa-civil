@@ -1,14 +1,14 @@
 import { Picker } from '@react-native-picker/picker';
 import { useState } from 'react';
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Header from '../src/components/Header';
+import InputDark from '../src/components/InputDark';
 import districts from '../src/districts.json';
 import colors from '../src/styles/colors';
 import fonts from '../src/styles/fonts';
 
 export default function CreateNewWarning() {
     const [description, setDescription] = useState('');
-    const [isFocused, setIsFocused] = useState(false);
     const [isDescriptionFilled, setIsDescriptionFilled] = useState(false);
     const [category, setCategory] = useState();
     const [district, setDistrict] = useState();
@@ -25,20 +25,6 @@ export default function CreateNewWarning() {
 
         const currentDate = `${day}/${month}/${year} ${hours}:${minutes}`;
         return currentDate;
-    }
-
-    function handleInputBlur() {
-        setIsFocused(false);
-        setIsDescriptionFilled(!!description);
-    }
-
-    function handleInputFocus() {
-        setIsFocused(true);
-    }
-
-    function handleInputChange(value: string) {
-        setIsDescriptionFilled(!!value);
-        setDescription(value);
     }
 
     return (
@@ -62,8 +48,9 @@ export default function CreateNewWarning() {
                             }}
                         >
                             <Picker.Item label='' value='' enabled={false} />
-                            {districts.bairros.map((currentDistrict) => (
+                            {districts.bairros.map((currentDistrict, index) => (
                                 <Picker.Item
+                                    key={index}
                                     label={currentDistrict.name}
                                     value={currentDistrict.name.toUpperCase().replaceAll('Á', 'A').replaceAll(' ', '_')}
                                 />
@@ -94,17 +81,13 @@ export default function CreateNewWarning() {
                 </View>
 
                 <View style={styles.inputWrapper}>
-                    <Text style={styles.label}>Descrição:</Text>
-                    <TextInput
-                        style={[styles.input, isFocused && { borderColor: colors.blue_400 }]}
-                        placeholder='Deslizamento na rua beta esquina com malta'
-                        onBlur={handleInputBlur}
-                        selectionColor={colors.blue_400}
-                        onFocus={handleInputFocus}
-                        onChangeText={handleInputChange}
+                    <InputDark
+                        inputData={description}
+                        label='Descrição:'
+                        placeholder='Ex: Deslizamento na rua beta esquina com malta'
+                        setInputFunction={setDescription}
+                        setIsInputFilled={setIsDescriptionFilled}
                         numberOfLines={4}
-                        multiline
-                        textAlignVertical='top'
                     />
                 </View>
 
@@ -145,7 +128,6 @@ const styles = StyleSheet.create({
         color: colors.blue_900,
         width: '100%',
         fontSize: 16,
-        padding: 8,
         borderRadius: 8,
         alignItems: 'flex-start',
         // backgroundColor: 'red',
