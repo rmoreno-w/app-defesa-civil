@@ -2,6 +2,7 @@ import { Picker } from '@react-native-picker/picker';
 import { useState } from 'react';
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Header from '../src/components/Header';
+import districts from '../src/districts.json';
 import colors from '../src/styles/colors';
 import fonts from '../src/styles/fonts';
 
@@ -10,6 +11,7 @@ export default function CreateNewWarning() {
     const [isFocused, setIsFocused] = useState(false);
     const [isDescriptionFilled, setIsDescriptionFilled] = useState(false);
     const [category, setCategory] = useState();
+    const [district, setDistrict] = useState();
 
     function getDate() {
         const dateObject = new Date();
@@ -49,7 +51,50 @@ export default function CreateNewWarning() {
                 <Text>{getDate()}</Text>
 
                 <View style={styles.inputWrapper}>
-                    <Text style={styles.label}>Descrição</Text>
+                    <Text style={styles.label}>Bairro:</Text>
+                    <View style={styles.input}>
+                        <Picker
+                            selectedValue={district}
+                            onValueChange={(districtValue, districtIndex) => setDistrict(districtValue)}
+                            dropdownIconColor={colors.blue_600}
+                            style={{
+                                width: '100%',
+                            }}
+                        >
+                            <Picker.Item label='' value='' enabled={false} />
+                            {districts.bairros.map((currentDistrict) => (
+                                <Picker.Item
+                                    label={currentDistrict.name}
+                                    value={currentDistrict.name.toUpperCase().replaceAll('Á', 'A').replaceAll(' ', '_')}
+                                />
+                            ))}
+                        </Picker>
+                    </View>
+                </View>
+
+                <View style={styles.inputWrapper}>
+                    <Text style={styles.label}>Categoria:</Text>
+                    <View style={styles.input}>
+                        <Picker
+                            selectedValue={category}
+                            onValueChange={(categoryValue, categoryIndex) => setCategory(categoryValue)}
+                            dropdownIconColor={colors.blue_600}
+                            style={{
+                                width: '100%',
+                            }}
+                        >
+                            <Picker.Item label='' value='' enabled={false} />
+                            <Picker.Item label='Chuva Intensa' value='FLOOD' />
+                            <Picker.Item label='Deslizamento de Terra' value='LANDSLIDE' />
+                            <Picker.Item label='Fogo / Incêndio' value='FIRE' />
+                            <Picker.Item label='Vento Intenso' value='INTENSE_WIND' />
+                            <Picker.Item label='Outros' value='OTHERS' />
+                        </Picker>
+                    </View>
+                </View>
+
+                <View style={styles.inputWrapper}>
+                    <Text style={styles.label}>Descrição:</Text>
                     <TextInput
                         style={[styles.input, isFocused && { borderColor: colors.blue_400 }]}
                         placeholder='Deslizamento na rua beta esquina com malta'
@@ -61,24 +106,6 @@ export default function CreateNewWarning() {
                         multiline
                         textAlignVertical='top'
                     />
-                </View>
-
-                <View style={styles.inputWrapper}>
-                    <Text style={styles.label}>Categoria</Text>
-                    <View style={styles.input}>
-                        <Picker
-                            selectedValue={category}
-                            onValueChange={(categoryValue, categoryIndex) => setCategory(categoryValue)}
-                            dropdownIconColor={colors.blue_600}
-                            style={{
-                                width: '100%',
-                            }}
-                        >
-                            <Picker.Item label='' value='' enabled={false} />
-                            <Picker.Item label='Java' value='java' />
-                            <Picker.Item label='JavaEscrito' value='java2' />
-                        </Picker>
-                    </View>
                 </View>
 
                 <TouchableOpacity activeOpacity={0.8} style={styles.button}>

@@ -1,0 +1,156 @@
+{
+    "bairros": [
+        {
+            "id": 30297,
+            "name": "Centro"
+        },
+        {
+            "id": 30298,
+            "name": "Morro Chic"
+        },
+        {
+            "id": 30299,
+            "name": "Pinheirinho"
+        },
+        {
+            "id": 30300,
+            "name": "Nossa Senhora da Agonia"
+        },
+        {
+            "id": 30301,
+            "name": "Cruzeiro"
+        },
+        {
+            "id": 30302,
+            "name": "Oriente"
+        },
+        {
+            "id": 30303,
+            "name": "Estiva"
+        },
+        {
+            "id": 30304,
+            "name": "Varginha"
+        },
+        {
+            "id": 30305,
+            "name": "Porto Velho"
+        },
+        {
+            "id": 30306,
+            "name": "Imbel"
+        },
+        {
+            "id": 30307,
+            "name": "Santa Rosa"
+        },
+        {
+            "id": 30308,
+            "name": "São Vicente"
+        },
+        {
+            "id": 30309,
+            "name": "Medicina"
+        },
+        {
+            "id": 30310,
+            "name": "Anhumas"
+        },
+        {
+            "id": 30311,
+            "name": "São Sebastião"
+        },
+        {
+            "id": 30312,
+            "name": "Santa Rita de Cássia"
+        },
+        {
+            "id": 30313,
+            "name": "Nossa Senhora de Fátima"
+        },
+        {
+            "id": 30314,
+            "name": "Morro Grande"
+        },
+        {
+            "id": 30315,
+            "name": "Vila Poddis"
+        },
+        {
+            "id": 30316,
+            "name": "Santo Antônio"
+        },
+        {
+            "id": 30317,
+            "name": "Santa Luzia"
+        },
+        {
+            "id": 30318,
+            "name": "Jardim Bernadete"
+        },
+        {
+            "id": 30319,
+            "name": "Rebourgeon"
+        },
+        {
+            "id": 30320,
+            "name": "Avenida"
+        },
+        {
+            "id": 30321,
+            "name": "São Judas Tadeu"
+        },
+        {
+            "id": 30322,
+            "name": "Distrito Industrial"
+        },
+        {
+            "id": 30323,
+            "name": "Santos Dumont"
+        },
+        {
+            "id": 30324,
+            "name": "Açude"
+        },
+        {
+            "id": 30325,
+            "name": "Nações"
+        },
+        {
+            "id": 30326,
+            "name": "Piedade"
+        },
+        {
+            "id": 30327,
+            "name": "Boa Vista"
+        },
+        {
+            "id": 30328,
+            "name": "Vila Rubens"
+        },
+        {
+            "id": 30329,
+            "name": "Novo Horizonte"
+        },
+        {
+            "id": 30330,
+            "name": "Vila Isabel"
+        },
+        {
+            "id": 30331,
+            "name": "Vila Betel"
+        },
+        {
+            "id": 30332,
+            "name": "Ponte Alta"
+        },
+        {
+            "id": 30333,
+            "name": "Área Rural de Itajubá"
+        },
+        {
+            "id": 30334,
+            "name": "São José do Rio Manso"
+        }
+    ]
+}
