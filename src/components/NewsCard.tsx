@@ -8,7 +8,7 @@ export default function NewsCard() {
     const router = useRouter();
 
     function navigateOnPress() {
-        router.push('/news');
+        router.push('/newsDetails');
     }
 
     return (
@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
     },
     newsContentContainer: {
         padding: 12,
-        width: '75%',
+        width: '70%',
         justifyContent: 'space-between',
         borderRightWidth: 1,
         borderRightColor: colors.blue_600,
@@ -63,6 +63,6 @@ const styles = StyleSheet.create({
     iconContainer: {
         justifyContent: 'center',
         alignItems: 'center',
-        width: '25%',
+        width: '30%',
     },
 });

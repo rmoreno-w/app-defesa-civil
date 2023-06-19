@@ -1,4 +1,6 @@
-import { FlatList, StyleSheet, Text, View } from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
+import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Header from '../src/components/Header';
 import UserMainMenuOption from '../src/components/MainMenuOptions/UserOption';
 import NewsCard from '../src/components/NewsCard';
@@ -29,12 +31,51 @@ export default function Page() {
                     data={[1, 2, 3, 4, 5]}
                     keyExtractor={(newsItem) => String(newsItem)}
                     renderItem={(newsItem) => <NewsCard />}
-                    contentContainerStyle={{ gap: 12, paddingBottom: 280 }}
+                    contentContainerStyle={{ gap: 12, paddingBottom: 285 }}
                     // style={{ backgroundColor: 'yellow' }}
                     showsVerticalScrollIndicator={false}
+                    ListFooterComponent={() => <BottomMenuComponent />}
                 ></FlatList>
             </View>
         </View>
+    );
+}
+
+function BottomMenuComponent() {
+    const router = useRouter();
+
+    function navigate() {
+        router.push('/newsFeed');
+    }
+
+    return (
+        <TouchableOpacity
+            onPress={navigate}
+            activeOpacity={0.5}
+            style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                borderWidth: 3,
+                borderColor: colors.blue_600,
+                borderRadius: 8,
+                // borderBottomWidth: 3,
+                // borderBottomColor: colors.blue_600,
+            }}
+        >
+            <View
+                style={{
+                    borderRightWidth: 1,
+                    borderRightColor: colors.blue_600,
+                    width: '70%',
+                }}
+            >
+                <Text style={{ padding: 12 }}>Acessar todas as notícias</Text>
+            </View>
+            <View style={{ width: '30%', alignItems: 'center' }}>
+                <MaterialIcons name='dynamic-feed' size={24} color={colors.blue_600} />
+            </View>
+        </TouchableOpacity>
     );
 }
 
