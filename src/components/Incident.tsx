@@ -1,4 +1,5 @@
 import { Feather, MaterialIcons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import colors from '../styles/colors';
 import fonts from '../styles/fonts';
@@ -8,8 +9,14 @@ interface IncidentProps {
 }
 
 export default function Incident({ icon }: IncidentProps) {
+    const router = useRouter();
+
+    function navigate() {
+        router.push('/incidentDetails');
+    }
+
     return (
-        <TouchableOpacity style={styles.incident} activeOpacity={0.45}>
+        <TouchableOpacity style={styles.incident} activeOpacity={0.45} onPress={navigate}>
             <View style={styles.iconWrapper}>
                 {icon == 'wind' && <Feather name='wind' size={18} color={colors.blue_50} />}
                 {icon == 'cloud-rain' && <Feather name='cloud-rain' size={18} color={colors.blue_50} />}

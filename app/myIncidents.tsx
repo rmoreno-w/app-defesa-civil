@@ -6,7 +6,7 @@ import colors from '../src/styles/colors';
 import fonts from '../src/styles/fonts';
 
 export default function MyIncidents() {
-    const [myIncidents, setMyIncidents] = useState<Array<string>>(['Sim', 'Não']);
+    const [myIncidents, setMyIncidents] = useState<Array<string>>(['Sim', 'Não', 'Aham', 'Claro']);
     return (
         <View style={styles.container}>
             <Header showCloseIcon />
@@ -21,14 +21,20 @@ export default function MyIncidents() {
                     </View>
                 )}
                 {myIncidents.length != 0 && (
-                    <View style={styles.incidentsContainer}>
+                    <View>
                         <View style={styles.headerContainer}>
                             <Text style={styles.headerDescription}>Descrição</Text>
                             <Text style={styles.headerDate}>Data</Text>
                             <Text style={styles.headerStatus}>Status</Text>
                         </View>
                         {myIncidents.map((incident, index) => (
-                            <View style={styles.incidentLineContainer}>
+                            <View
+                                style={
+                                    index == myIncidents.length - 1
+                                        ? [styles.incidentLineContainer, { borderBottomColor: colors.blue_600 }]
+                                        : styles.incidentLineContainer
+                                }
+                            >
                                 <Text style={styles.incidentDescription} ellipsizeMode='tail' numberOfLines={1}>
                                     {incident}
                                 </Text>
@@ -43,7 +49,8 @@ export default function MyIncidents() {
                 )}
 
                 <View style={styles.iconDescriptionContainer}>
-                    <Text style={styles.iconDescription}>Significado dos ícones:</Text>
+                    <Text style={styles.iconDescription}>Significado dos ícones de Status:</Text>
+
                     <View style={styles.iconDescriptionLine}>
                         <Feather name='clock' size={16} color={colors.yellow} />
                         <Text>- Enviado para análise pela Defesa Civil</Text>
@@ -87,22 +94,29 @@ const styles = StyleSheet.create({
         // paddingBottom: 24,
         gap: 8,
     },
-    incidentsContainer: {},
     headerContainer: {
         flexDirection: 'row',
-        borderWidth: 2,
-        borderColor: colors.blue_600,
+        borderTopWidth: 2,
+        borderTopColor: colors.blue_600,
+        borderBottomWidth: 2,
+        borderBottomColor: colors.blue_600,
         padding: 8,
     },
     headerDescription: {
+        fontFamily: fonts.textBold,
+        color: colors.blue_600,
         width: '45%',
         paddingLeft: 4,
     },
     headerDate: {
+        fontFamily: fonts.textBold,
+        color: colors.blue_600,
         width: '35%',
         paddingLeft: 4,
     },
     headerStatus: {
+        fontFamily: fonts.textBold,
+        color: colors.blue_600,
         paddingLeft: 4,
         width: '20%',
     },
