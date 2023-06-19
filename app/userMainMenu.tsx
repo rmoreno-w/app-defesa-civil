@@ -1,6 +1,6 @@
 import { FlatList, StyleSheet, Text, View } from 'react-native';
 import Header from '../src/components/Header';
-import MainMenuOption from '../src/components/MainMenuOption';
+import UserMainMenuOption from '../src/components/MainMenuOptions/UserOption';
 import NewsCard from '../src/components/NewsCard';
 import colors from '../src/styles/colors';
 import fonts from '../src/styles/fonts';
@@ -14,13 +14,13 @@ export default function Page() {
 
             <View style={styles.menuContainer}>
                 <View style={styles.optionsContainer}>
-                    <MainMenuOption option='Consultar incidentes' icon='cloud-rain' navigateTo='/verifyIncidents' />
-                    <MainMenuOption
+                    <UserMainMenuOption option='Consultar incidentes' icon='cloud-rain' navigateTo='/verifyIncidents' />
+                    <UserMainMenuOption
                         option='Enviar aviso à defesa civil'
                         icon='cloud-arrow'
                         navigateTo='/createNewWarning'
                     />
-                    <MainMenuOption option='Ver avisos enviados' icon='list' navigateTo='/myIncidents' />
+                    <UserMainMenuOption option='Ver avisos enviados' icon='list' navigateTo='/myIncidents' />
                 </View>
 
                 <Text style={styles.subtitle}>Últimas notícias:</Text>

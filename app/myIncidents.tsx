@@ -29,6 +29,7 @@ export default function MyIncidents() {
                         </View>
                         {myIncidents.map((incident, index) => (
                             <View
+                                key={index}
                                 style={
                                     index == myIncidents.length - 1
                                         ? [styles.incidentLineContainer, { borderBottomColor: colors.blue_600 }]

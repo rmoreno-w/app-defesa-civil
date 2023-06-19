@@ -3,7 +3,7 @@ import { WorkSans_400Regular, WorkSans_700Bold, useFonts } from '@expo-google-fo
 import Checkbox from 'expo-checkbox';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Input from '../src/components/Input';
 import colors from '../src/styles/colors';
@@ -11,11 +11,13 @@ import fonts from '../src/styles/fonts';
 
 export default function loginPageLayout() {
     const router = useRouter();
+
     const [email, setEmail] = useState('');
     const [isEmailFilled, setIsEmailFilled] = useState(false);
     const [senha, setSenha] = useState('');
     const [isSenhaFilled, setIsSenhaFilled] = useState(false);
     const [isCheckboxMarked, setIsCheckboxMarked] = useState(false);
+    const [isMainMenuLoading, setIsMainMenuLoading] = useState(false);
 
     const [fontsLoaded] = useFonts({
         WorkSans_400Regular,
@@ -28,7 +30,16 @@ export default function loginPageLayout() {
     }
 
     function onButtonPress() {
-        router.replace('/mainMenu');
+        setIsMainMenuLoading(true);
+        setTimeout(() => {
+            if (email.toLowerCase().includes('agent')) {
+                setEmail('');
+                router.replace('/agentMainMenu');
+            } else {
+                setEmail('');
+                router.replace('/userMainMenu');
+            }
+        }, 950);
     }
 
     return (
@@ -70,7 +81,13 @@ export default function loginPageLayout() {
                     </View>
                 </View>
                 <TouchableOpacity style={styles.button} onPress={onButtonPress} activeOpacity={0.75}>
-                    <Text style={styles.buttonText}>Login</Text>
+                    {!isMainMenuLoading && <Text style={styles.buttonText}>Login</Text>}
+                    {isMainMenuLoading && (
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}>
+                            <Text style={styles.buttonText}>Conectando</Text>
+                            <ActivityIndicator size={'small'} color={colors.blue_900} />
+                        </View>
+                    )}
                 </TouchableOpacity>
             </View>
         </View>

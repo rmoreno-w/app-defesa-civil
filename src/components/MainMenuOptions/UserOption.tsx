@@ -1,15 +1,15 @@
 import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
-import colors from '../styles/colors';
-import fonts from '../styles/fonts';
+import colors from '../../styles/colors';
+import fonts from '../../styles/fonts';
 
 interface MainMenuOptionProps {
     option: string;
     icon: 'cloud-rain' | 'cloud-arrow' | 'list';
     navigateTo: string;
 }
-export default function MainMenuOption({ icon, navigateTo, option }: MainMenuOptionProps) {
+export default function UserMainMenuOption({ icon, navigateTo, option }: MainMenuOptionProps) {
     const router = useRouter();
 
     function navigate() {
