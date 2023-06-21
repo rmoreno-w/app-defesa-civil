@@ -1,0 +1,8 @@
+{
+    "values": [
+        { "label": "Educacional", "value": "EDUCATIONAL" },
+        { "label": "Aviso", "value": "WARNING" },
+        { "label": "Meteorologia", "value": "METEOROLOGY" },
+        { "label": "Outro", "value": "OTHERS" }
+    ]
+}

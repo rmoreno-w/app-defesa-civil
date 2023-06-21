@@ -1,13 +1,14 @@
-import { Picker } from '@react-native-picker/picker';
 import { useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Header from '../src/components/Header';
 import InputDark from '../src/components/InputDark';
+import Picker from '../src/components/Picker';
+import Categories from '../src/newsCategories.json';
 import colors from '../src/styles/colors';
 import fonts from '../src/styles/fonts';
 
 export default function CreateNews() {
-    const [category, setCategory] = useState();
+    const [category, setCategory] = useState('');
     const [newsTitle, setNewsTitle] = useState('');
     const [isNewsTitleFocused, setIsNewsTitleFocused] = useState(false);
     const [newsDescription, setNewsDescription] = useState('');
@@ -20,25 +21,12 @@ export default function CreateNews() {
             <View style={styles.formContainer}>
                 <Text style={styles.subtitle}>Publicar notícia:</Text>
 
-                <View style={styles.inputWrapper}>
-                    <Text style={styles.label}>Categoria:</Text>
-                    <View style={styles.input}>
-                        <Picker
-                            selectedValue={category}
-                            onValueChange={(categoryValue, categoryIndex) => setCategory(categoryValue)}
-                            dropdownIconColor={colors.blue_600}
-                            style={{
-                                width: '100%',
-                            }}
-                        >
-                            <Picker.Item label='' value='' enabled={false} />
-                            <Picker.Item label='Educacional' value='EDUCATIONAL' />
-                            <Picker.Item label='Aviso' value='WARNING' />
-                            <Picker.Item label='Meteorologia' value='METEOROLOGY' />
-                            <Picker.Item label='Outro' value='OTHERS' />
-                        </Picker>
-                    </View>
-                </View>
+                <Picker
+                    chosenItem={category}
+                    setChosenItem={setCategory}
+                    itemsToDisplay={Categories}
+                    label='Categoria'
+                />
 
                 <View style={styles.inputWrapper}>
                     <InputDark

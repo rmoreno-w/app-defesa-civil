@@ -1,17 +1,23 @@
-import { Picker } from '@react-native-picker/picker';
 import { useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Header from '../src/components/Header';
 import InputDark from '../src/components/InputDark';
-import districts from '../src/districts.json';
+import Picker from '../src/components/Picker';
+import importedDistricts from '../src/districts.json';
+import incidentsCategories from '../src/incidentsCategories.json';
 import colors from '../src/styles/colors';
 import fonts from '../src/styles/fonts';
 
 export default function CreateNewWarning() {
     const [description, setDescription] = useState('');
     const [isDescriptionFilled, setIsDescriptionFilled] = useState(false);
-    const [category, setCategory] = useState();
-    const [district, setDistrict] = useState();
+    const [category, setCategory] = useState('');
+    const [district, setDistrict] = useState('');
+
+    const neww = Object.values(importedDistricts);
+    const { 0: districtsArray } = neww;
+    const values = districtsArray.map((item) => ({ label: item, value: item }));
+    const formattedDistricts = { values };
 
     function getDate() {
         const dateObject = new Date();
@@ -36,49 +42,19 @@ export default function CreateNewWarning() {
 
                 <Text>{getDate()}</Text>
 
-                <View style={styles.inputWrapper}>
-                    <Text style={styles.label}>Bairro:</Text>
-                    <View style={styles.input}>
-                        <Picker
-                            selectedValue={district}
-                            onValueChange={(districtValue, districtIndex) => setDistrict(districtValue)}
-                            dropdownIconColor={colors.blue_600}
-                            style={{
-                                width: '100%',
-                            }}
-                        >
-                            <Picker.Item label='' value='' enabled={false} />
-                            {districts.bairros.map((currentDistrict, index) => (
-                                <Picker.Item
-                                    key={index}
-                                    label={currentDistrict.name}
-                                    value={currentDistrict.name.toUpperCase().replaceAll('Á', 'A').replaceAll(' ', '_')}
-                                />
-                            ))}
-                        </Picker>
-                    </View>
-                </View>
+                <Picker
+                    chosenItem={district}
+                    itemsToDisplay={formattedDistricts}
+                    label='Bairros'
+                    setChosenItem={setDistrict}
+                />
 
-                <View style={styles.inputWrapper}>
-                    <Text style={styles.label}>Categoria:</Text>
-                    <View style={styles.input}>
-                        <Picker
-                            selectedValue={category}
-                            onValueChange={(categoryValue, categoryIndex) => setCategory(categoryValue)}
-                            dropdownIconColor={colors.blue_600}
-                            style={{
-                                width: '100%',
-                            }}
-                        >
-                            <Picker.Item label='' value='' enabled={false} />
-                            <Picker.Item label='Chuva Intensa' value='FLOOD' />
-                            <Picker.Item label='Deslizamento de Terra' value='LANDSLIDE' />
-                            <Picker.Item label='Fogo / Incêndio' value='FIRE' />
-                            <Picker.Item label='Vento Intenso' value='INTENSE_WIND' />
-                            <Picker.Item label='Outros' value='OTHERS' />
-                        </Picker>
-                    </View>
-                </View>
+                <Picker
+                    chosenItem={category}
+                    itemsToDisplay={incidentsCategories}
+                    label='Categorias'
+                    setChosenItem={setCategory}
+                />
 
                 <View style={styles.inputWrapper}>
                     <InputDark
