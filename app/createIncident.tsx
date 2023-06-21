@@ -1,20 +1,24 @@
+import Checkbox from 'expo-checkbox';
 import { useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Header from '../src/components/Header';
 import InputDark from '../src/components/InputDark';
 import MultiPicker from '../src/components/MultiPicker';
+import Picker from '../src/components/Picker';
 import importedDistricts from '../src/districts.json';
+import incidentsCategories from '../src/incidentsCategories.json';
 import colors from '../src/styles/colors';
 import fonts from '../src/styles/fonts';
 
 export default function CreateIncident() {
-    const [category, setCategory] = useState();
+    const [category, setCategory] = useState('');
     const [incidentTitle, setIncidentTitle] = useState('');
     const [isIncidentTitleFocused, setIsIncidentTitleFocused] = useState(false);
     const [incidentDescription, setIncidentDescription] = useState('');
     const [isIncidentDescriptionFocused, setIsIncidentDescriptionFocused] = useState(false);
     // const [districts, setDistricts] = useState<Array<string>>([]);
     const [district, setDistrict] = useState('');
+    const [shouldSendNotification, setShouldSendNotification] = useState(false);
 
     return (
         <View style={styles.container}>
@@ -23,53 +27,51 @@ export default function CreateIncident() {
             <View style={styles.formContainer}>
                 <Text style={styles.subtitle}>Publicar incidente:</Text>
 
-                <MultiPicker itemsToDisplay={importedDistricts.values} label='Bairros' />
-                {/* <View style={styles.inputWrapper}>
-                    <Text style={styles.label}>Categoria:</Text>
-                    <View style={styles.input}>
-                        <Picker
-                            selectedValue={category}
-                            onValueChange={(categoryValue, categoryIndex) => setCategory(categoryValue)}
-                            dropdownIconColor={colors.blue_600}
-                            style={{
-                                width: '100%',
-                            }}
-                        >
-                            <Picker.Item label='' value='' enabled={false} />
-                            <Picker.Item label='Chuva Intensa' value='FLOOD' />
-                            <Picker.Item label='Deslizamento de Terra' value='LANDSLIDE' />
-                            <Picker.Item label='Fogo / Incêndio' value='FIRE' />
-                            <Picker.Item label='Vento Intenso' value='INTENSE_WIND' />
-                            <Picker.Item label='Temperaturas Altas' value='HIGH_TEMPERATURES' />
-                            <Picker.Item label='Outros' value='OTHERS' />
-                        </Picker>
+                <ScrollView contentContainerStyle={{ gap: 24, paddingBottom: 140 }}>
+                    <MultiPicker itemsToDisplay={importedDistricts.values} label='Bairros' />
+
+                    <Picker
+                        chosenItem={category}
+                        itemsToDisplay={incidentsCategories}
+                        label='Categoria'
+                        setChosenItem={setCategory}
+                    />
+
+                    <View style={styles.inputWrapper}>
+                        <InputDark
+                            inputData={incidentTitle}
+                            label='Título do Incidente'
+                            placeholder='Ex: Deslizamento e trânsito impedido'
+                            setInputFunction={setIncidentTitle}
+                            setIsInputFilled={setIsIncidentTitleFocused}
+                        />
                     </View>
-                </View> */}
 
-                <View style={styles.inputWrapper}>
-                    <InputDark
-                        inputData={incidentTitle}
-                        label='Título do Incidente'
-                        placeholder='Ex: Deslizamento e trânsito impedido'
-                        setInputFunction={setIncidentTitle}
-                        setIsInputFilled={setIsIncidentTitleFocused}
-                    />
-                </View>
+                    <View style={styles.inputWrapper}>
+                        <InputDark
+                            inputData={incidentDescription}
+                            label='Descrição do incidente'
+                            placeholder='Ex: Após chuva intensa, ocorreu deslizamento e as xx ruas do bairro yy estão impedidas, prejudicando o trânsito na região dos bairros zz, ww e vv'
+                            setInputFunction={setIncidentDescription}
+                            setIsInputFilled={setIsIncidentDescriptionFocused}
+                            numberOfLines={4}
+                        />
+                    </View>
 
-                <View style={styles.inputWrapper}>
-                    <InputDark
-                        inputData={incidentDescription}
-                        label='Descrição do incidente'
-                        placeholder='Ex: Após chuva intensa, ocorreu deslizamento e as xx ruas do bairro yy estão impedidas, prejudicando o trânsito na região dos bairros zz, ww e vv'
-                        setInputFunction={setIncidentDescription}
-                        setIsInputFilled={setIsIncidentDescriptionFocused}
-                        numberOfLines={4}
-                    />
-                </View>
-
-                <TouchableOpacity activeOpacity={0.8} style={styles.button}>
-                    <Text style={styles.buttonText}>Enviar</Text>
-                </TouchableOpacity>
+                    <View style={styles.checkboxContainer}>
+                        <Checkbox
+                            value={shouldSendNotification}
+                            onValueChange={setShouldSendNotification}
+                            color={colors.blue_600}
+                        />
+                        <Text style={styles.checkboxText}>
+                            Enviar notificação deste incidente para os bairros selecionados?
+                        </Text>
+                    </View>
+                    <TouchableOpacity activeOpacity={0.8} style={styles.button}>
+                        <Text style={styles.buttonText}>Criar Incidente</Text>
+                    </TouchableOpacity>
+                </ScrollView>
             </View>
         </View>
     );
@@ -110,6 +112,15 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         alignItems: 'flex-start',
         // backgroundColor: 'red',
+    },
+    checkboxContainer: {
+        flexDirection: 'row',
+        gap: 12,
+        alignItems: 'center',
+    },
+    checkboxText: {
+        flexShrink: 1,
+        // width: '90%',
     },
     button: {
         alignContent: 'center',

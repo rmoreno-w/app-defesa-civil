@@ -30,7 +30,6 @@ export default function Picker({ label, itemsToDisplay, chosenItem, setChosenIte
         setIsModalOpen(false);
     }
 
-    console.log(itemsToDisplay);
     return (
         <View style={styles.inputWrapper}>
             <Text style={styles.label}>{label}</Text>
