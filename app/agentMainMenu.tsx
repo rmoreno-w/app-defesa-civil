@@ -24,7 +24,7 @@ export default function Page() {
                     <AgentMainMenuOption
                         option={`Dados meteorológicos ${`\n`}do dia`}
                         icon='cloud-rain'
-                        navigateTo='/myIncidents'
+                        navigateTo='/weatherForecast'
                     />
                 </View>
             </View>
