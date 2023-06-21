@@ -12,8 +12,6 @@ import fonts from '../src/styles/fonts';
 
 export default function CreateIncident() {
     const [category, setCategory] = useState('');
-    const [incidentTitle, setIncidentTitle] = useState('');
-    const [isIncidentTitleFocused, setIsIncidentTitleFocused] = useState(false);
     const [incidentDescription, setIncidentDescription] = useState('');
     const [isIncidentDescriptionFocused, setIsIncidentDescriptionFocused] = useState(false);
     // const [districts, setDistricts] = useState<Array<string>>([]);
@@ -22,7 +20,7 @@ export default function CreateIncident() {
 
     return (
         <View style={styles.container}>
-            <Header />
+            <Header showCloseIcon />
 
             <View style={styles.formContainer}>
                 <Text style={styles.subtitle}>Publicar incidente:</Text>
@@ -36,16 +34,6 @@ export default function CreateIncident() {
                         label='Categoria'
                         setChosenItem={setCategory}
                     />
-
-                    <View style={styles.inputWrapper}>
-                        <InputDark
-                            inputData={incidentTitle}
-                            label='Título do Incidente'
-                            placeholder='Ex: Deslizamento e trânsito impedido'
-                            setInputFunction={setIncidentTitle}
-                            setIsInputFilled={setIsIncidentTitleFocused}
-                        />
-                    </View>
 
                     <View style={styles.inputWrapper}>
                         <InputDark

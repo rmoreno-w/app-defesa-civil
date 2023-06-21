@@ -16,7 +16,7 @@ export default function Page() {
                     <AgentMainMenuOption
                         option='Analisar incidentes enviados por usuários'
                         icon='list'
-                        navigateTo='/verifyIncidents'
+                        navigateTo='/incidentsAnalysis'
                     />
                     <AgentMainMenuOption option='Novo incidente' icon='map' navigateTo='/createIncident' />
                     <AgentMainMenuOption option='Nova notícia' icon='newspaper' navigateTo='/createNews' />

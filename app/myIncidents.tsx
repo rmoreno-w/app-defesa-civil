@@ -17,7 +17,9 @@ export default function MyIncidents() {
                 {myIncidents.length == 0 && (
                     <View style={styles.noIncidentsContainer}>
                         <Feather name='meh' size={24} color={colors.blue_600} />
-                        <Text>Ops! Você ainda não enviou nenhum aviso.</Text>
+                        <View style={{ flexShrink: 1 }}>
+                            <Text>Ops! Você ainda não enviou nenhum aviso.</Text>
+                        </View>
                     </View>
                 )}
                 {myIncidents.length != 0 && (
@@ -120,9 +122,6 @@ const styles = StyleSheet.create({
         color: colors.blue_600,
         paddingLeft: 4,
         width: '20%',
-    },
-    header: {
-        padding: 4,
     },
     incidentLineContainer: {
         flexDirection: 'row',
