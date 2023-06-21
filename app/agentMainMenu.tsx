@@ -18,7 +18,7 @@ export default function Page() {
                         icon='list'
                         navigateTo='/verifyIncidents'
                     />
-                    <AgentMainMenuOption option='Novo incidente' icon='map' navigateTo='/createNewWarning' />
+                    <AgentMainMenuOption option='Novo incidente' icon='map' navigateTo='/createIncident' />
                     <AgentMainMenuOption option='Nova notícia' icon='newspaper' navigateTo='/createNews' />
                     <AgentMainMenuOption option='Feed de notícias' icon='list-news' navigateTo='/newsFeed' />
                     <AgentMainMenuOption
