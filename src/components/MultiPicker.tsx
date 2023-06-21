@@ -1,7 +1,7 @@
 import { Feather } from '@expo/vector-icons';
 import { useEffect, useState } from 'react';
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { TextInput } from 'react-native-gesture-handler';
+import { ScrollView, TextInput } from 'react-native-gesture-handler';
 import colors from '../styles/colors';
 
 interface MultiPickerProps {
@@ -52,10 +52,14 @@ export default function MultiPicker({ label, itemsToDisplay }: MultiPickerProps)
                     onRequestClose={() => setIsModalOpen(false)}
                 >
                     <View style={styles.modalBackground}>
-                        <View style={styles.modalWrapper}>
+                        <ScrollView
+                            style={styles.modalWrapper}
+                            contentContainerStyle={{ paddingTop: 16, paddingBottom: 24, gap: 16 }}
+                        >
                             <TouchableOpacity style={styles.modalCloseButton} onPress={() => setIsModalOpen(false)}>
                                 <Text>Concluir</Text>
                             </TouchableOpacity>
+
                             <View style={styles.modalHeader}>
                                 <Text>Selecione um ou mais {label.toLowerCase()}:</Text>
                                 <TextInput
@@ -65,26 +69,28 @@ export default function MultiPicker({ label, itemsToDisplay }: MultiPickerProps)
                                 ></TextInput>
                             </View>
 
-                            {displayItems.map((item, index) => (
-                                <TouchableOpacity
-                                    style={[
-                                        styles.modalLine,
-                                        chosenItems.includes(index) && {
-                                            borderBottomColor: colors.blue_600,
-                                            borderBottomWidth: 2,
-                                        },
-                                    ]}
-                                    activeOpacity={0.5}
-                                    onPress={() => toggleItemSelection(index)}
-                                    key={item}
-                                >
-                                    <Text>{item}</Text>
-                                    {chosenItems.includes(index) && (
-                                        <Feather name='check' size={18} color={colors.green} />
-                                    )}
-                                </TouchableOpacity>
-                            ))}
-                        </View>
+                            <View>
+                                {displayItems.map((item, index) => (
+                                    <TouchableOpacity
+                                        style={[
+                                            styles.modalLine,
+                                            chosenItems.includes(index) && {
+                                                borderBottomColor: colors.blue_600,
+                                                borderBottomWidth: 2,
+                                            },
+                                        ]}
+                                        activeOpacity={0.5}
+                                        onPress={() => toggleItemSelection(index)}
+                                        key={item}
+                                    >
+                                        <Text>{item}</Text>
+                                        {chosenItems.includes(index) && (
+                                            <Feather name='check' size={18} color={colors.green} />
+                                        )}
+                                    </TouchableOpacity>
+                                ))}
+                            </View>
+                        </ScrollView>
                     </View>
                 </Modal>
                 <Text style={styles.inputText}>
@@ -128,7 +134,8 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(0,0,0,0.5)',
     },
     modalWrapper: {
-        paddingVertical: 32,
+        // paddingVertical: 16,
+        marginVertical: 32,
         paddingHorizontal: 16,
         backgroundColor: colors.blue_50,
         minWidth: '80%',
@@ -142,7 +149,7 @@ const styles = StyleSheet.create({
         gap: 4,
         borderRadius: 12,
         padding: 8,
-        maxWidth: '25%',
+        maxWidth: '35%',
         alignItems: 'center',
         alignSelf: 'flex-end',
         borderWidth: 1,
