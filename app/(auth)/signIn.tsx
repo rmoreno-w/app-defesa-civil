@@ -31,7 +31,11 @@ export default function loginPageLayout() {
         return null;
     }
 
-    function onButtonPress() {
+    function onSignupPress() {
+        router.push('/signUp');
+    }
+
+    function onLoginPress() {
         if (email && senha) {
             signIn({ email, senha, bairro: 'BPS' });
             setIsMainMenuLoading(true);
@@ -45,6 +49,7 @@ export default function loginPageLayout() {
             {/* Card */}
             <View style={styles.card}>
                 <Text style={styles.subtitle}>Faça login para conferir as atualizações na sua área!</Text>
+
                 <View style={styles.form}>
                     <Input
                         label='Email'
@@ -53,6 +58,7 @@ export default function loginPageLayout() {
                         setInputFunction={setEmail}
                         setIsInputFilled={setIsEmailFilled}
                     />
+
                     <Input
                         label='Senha'
                         placeholder='***********************'
@@ -61,6 +67,7 @@ export default function loginPageLayout() {
                         type='password'
                         setIsInputFilled={setIsSenhaFilled}
                     />
+
                     <View style={styles.checkboxContainer}>
                         <Checkbox
                             value={isCheckboxMarked}
@@ -76,7 +83,8 @@ export default function loginPageLayout() {
                         <Text style={styles.checkboxText}>Lembrar meus dados</Text>
                     </View>
                 </View>
-                <TouchableOpacity style={styles.button} onPress={onButtonPress} activeOpacity={0.75}>
+
+                <TouchableOpacity style={styles.button} onPress={onLoginPress} activeOpacity={0.75}>
                     {!isMainMenuLoading && <Text style={styles.buttonText}>Login</Text>}
                     {isMainMenuLoading && (
                         <View style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}>
@@ -85,6 +93,20 @@ export default function loginPageLayout() {
                         </View>
                     )}
                 </TouchableOpacity>
+
+                <View style={{ gap: 8 }}>
+                    <Text style={styles.subtitle}>Ainda não possui cadastro?</Text>
+                    <TouchableOpacity
+                        style={[
+                            styles.button,
+                            { backgroundColor: 'transparent', borderColor: colors.blue_300, borderWidth: 2 },
+                        ]}
+                        onPress={onSignupPress}
+                        activeOpacity={0.75}
+                    >
+                        <Text style={[styles.buttonText, { color: colors.blue_300 }]}>Cadastrar</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
         </View>
     );
@@ -96,7 +118,7 @@ const styles = StyleSheet.create({
         paddingVertical: 48,
         paddingHorizontal: 16,
         backgroundColor: colors.blue_50,
-        // backgroundColor: 'red',
+        justifyContent: 'space-evenly',
     },
     title: {
         fontFamily: fonts.heading,
@@ -105,7 +127,6 @@ const styles = StyleSheet.create({
         color: colors.blue_800,
     },
     card: {
-        marginTop: 64,
         padding: 24,
         backgroundColor: colors.blue_800,
         borderRadius: 12,
