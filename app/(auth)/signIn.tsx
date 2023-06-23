@@ -5,12 +5,14 @@ import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import Input from '../src/components/Input';
-import colors from '../src/styles/colors';
-import fonts from '../src/styles/fonts';
+import Input from '../../src/components/Input';
+import { useAuth } from '../../src/contexts/login-and-notifications-context';
+import colors from '../../src/styles/colors';
+import fonts from '../../src/styles/fonts';
 
 export default function loginPageLayout() {
     const router = useRouter();
+    const { signIn } = useAuth();
 
     const [email, setEmail] = useState('');
     const [isEmailFilled, setIsEmailFilled] = useState(false);
@@ -30,16 +32,10 @@ export default function loginPageLayout() {
     }
 
     function onButtonPress() {
-        setIsMainMenuLoading(true);
-        setTimeout(() => {
-            if (email.toLowerCase().includes('agent')) {
-                setEmail('');
-                router.replace('/agentMainMenu');
-            } else {
-                setEmail('');
-                router.replace('/userMainMenu');
-            }
-        }, 950);
+        if (email && senha) {
+            signIn({ email, senha, bairro: 'BPS' });
+            setIsMainMenuLoading(true);
+        }
     }
 
     return (
