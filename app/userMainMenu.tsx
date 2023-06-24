@@ -1,18 +1,21 @@
 import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import { useState } from 'react';
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Header from '../src/components/Header';
 import UserMainMenuOption from '../src/components/MainMenuOptions/UserOption';
 import NewsCard from '../src/components/NewsCard';
+import UserInfoCard from '../src/components/UserInfoCard';
 import colors from '../src/styles/colors';
 import fonts from '../src/styles/fonts';
 
-export default function Page() {
-    function onButtonPress() {}
+export default function UserMainMenu() {
+    const [isUserCardVisible, setIsUserCardVisible] = useState(false);
 
     return (
         <View style={styles.container}>
-            <Header showProfileIcon />
+            <Header showProfileIcon pressProfileButtonFunction={setIsUserCardVisible} />
+            <UserInfoCard isModalVisible={isUserCardVisible} setIsModalVisible={setIsUserCardVisible} />
 
             <View style={styles.menuContainer}>
                 <View style={styles.optionsContainer}>

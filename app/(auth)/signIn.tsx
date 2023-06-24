@@ -82,17 +82,17 @@ export default function loginPageLayout() {
                         />
                         <Text style={styles.checkboxText}>Lembrar meus dados</Text>
                     </View>
-                </View>
 
-                <TouchableOpacity style={styles.button} onPress={onLoginPress} activeOpacity={0.75}>
-                    {!isMainMenuLoading && <Text style={styles.buttonText}>Login</Text>}
-                    {isMainMenuLoading && (
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}>
-                            <Text style={styles.buttonText}>Conectando</Text>
-                            <ActivityIndicator size={'small'} color={colors.blue_900} />
-                        </View>
-                    )}
-                </TouchableOpacity>
+                    <TouchableOpacity style={styles.button} onPress={onLoginPress} activeOpacity={0.75}>
+                        {!isMainMenuLoading && <Text style={styles.buttonText}>Login</Text>}
+                        {isMainMenuLoading && (
+                            <View style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}>
+                                <Text style={styles.buttonText}>Conectando</Text>
+                                <ActivityIndicator size={'small'} color={colors.blue_900} />
+                            </View>
+                        )}
+                    </TouchableOpacity>
+                </View>
 
                 <View style={{ gap: 8 }}>
                     <Text style={styles.subtitle}>Ainda não possui cadastro?</Text>

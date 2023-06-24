@@ -7,8 +7,9 @@ import fonts from '../styles/fonts';
 interface HeaderProps {
     showCloseIcon?: boolean;
     showProfileIcon?: boolean;
+    pressProfileButtonFunction?: React.Dispatch<React.SetStateAction<boolean>>;
 }
-export default function Header({ showCloseIcon, showProfileIcon }: HeaderProps) {
+export default function Header({ showCloseIcon, showProfileIcon, pressProfileButtonFunction }: HeaderProps) {
     const router = useRouter();
 
     function closeCurrentPage() {
@@ -20,7 +21,11 @@ export default function Header({ showCloseIcon, showProfileIcon }: HeaderProps) 
             <Text style={styles.title}>SisVil</Text>
 
             {showProfileIcon && (
-                <TouchableOpacity style={styles.profileContainer} activeOpacity={0.5}>
+                <TouchableOpacity
+                    style={styles.profileContainer}
+                    activeOpacity={0.5}
+                    onPress={() => pressProfileButtonFunction(true)}
+                >
                     <Ionicons name='person-circle-outline' size={48} color={colors.blue_600} />
                     <Text style={styles.profileText}>Perfil</Text>
                 </TouchableOpacity>

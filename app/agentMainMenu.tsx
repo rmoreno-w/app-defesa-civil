@@ -1,15 +1,20 @@
+import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Header from '../src/components/Header';
 import AgentMainMenuOption from '../src/components/MainMenuOptions/AgentOption';
+import UserInfoCard from '../src/components/UserInfoCard';
 import colors from '../src/styles/colors';
 import fonts from '../src/styles/fonts';
 
-export default function Page() {
+export default function AgentMainMenu() {
     function onButtonPress() {}
+
+    const [isProfileCardVisible, setIsProfileCardVisible] = useState(false);
 
     return (
         <View style={styles.container}>
-            <Header showProfileIcon />
+            <Header showProfileIcon pressProfileButtonFunction={setIsProfileCardVisible} />
+            <UserInfoCard isModalVisible={isProfileCardVisible} setIsModalVisible={setIsProfileCardVisible} />
 
             <View style={styles.menuContainer}>
                 <View style={styles.optionsContainer}>

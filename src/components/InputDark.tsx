@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { TextInput } from 'react-native-gesture-handler';
+import { StyleSheet, Text, TextInput, View } from 'react-native';
 import colors from '../styles/colors';
 
 interface inputProps {
+    isInputEditable?: boolean;
     label: string;
     placeholder: string;
     inputData: string;
@@ -14,6 +14,7 @@ interface inputProps {
 }
 
 export default function InputDark({
+    isInputEditable,
     inputData,
     setInputFunction,
     label,
@@ -52,6 +53,8 @@ export default function InputDark({
                 numberOfLines={numberOfLines}
                 textAlignVertical={numberOfLines != 1 ? 'top' : 'center'}
                 multiline={numberOfLines != 1 && true}
+                value={inputData}
+                editable={isInputEditable}
             />
         </View>
     );
