@@ -12,12 +12,12 @@ import fonts from '../../src/styles/fonts';
 
 export default function loginPageLayout() {
     const router = useRouter();
-    const { signIn } = useAuth();
+    const { signIn, user } = useAuth();
 
     const [email, setEmail] = useState('');
     const [isEmailFilled, setIsEmailFilled] = useState(false);
-    const [senha, setSenha] = useState('');
-    const [isSenhaFilled, setIsSenhaFilled] = useState(false);
+    const [password, setPassword] = useState('');
+    const [isPasswordFilled, setIsPasswordFilled] = useState(false);
     const [isCheckboxMarked, setIsCheckboxMarked] = useState(false);
     const [isMainMenuLoading, setIsMainMenuLoading] = useState(false);
 
@@ -36,9 +36,10 @@ export default function loginPageLayout() {
     }
 
     function onLoginPress() {
-        if (email && senha) {
-            signIn({ email, senha, bairro: 'BPS' });
+        if (email && password) {
             setIsMainMenuLoading(true);
+            signIn({ email, password, bairro: 'BPS' });
+            setIsMainMenuLoading(false);
         }
     }
 
@@ -62,33 +63,42 @@ export default function loginPageLayout() {
                     <Input
                         label='Senha'
                         placeholder='***********************'
-                        inputData={senha}
-                        setInputFunction={setSenha}
+                        inputData={password}
+                        setInputFunction={setPassword}
                         type='password'
-                        setIsInputFilled={setIsSenhaFilled}
+                        setIsInputFilled={setIsPasswordFilled}
                     />
 
                     <View style={styles.checkboxContainer}>
                         <Checkbox
                             value={isCheckboxMarked}
                             disabled={
-                                (!isEmailFilled && !isSenhaFilled) ||
-                                (!isEmailFilled && isSenhaFilled) ||
-                                (isEmailFilled && !isSenhaFilled)
+                                (!isEmailFilled && !isPasswordFilled) ||
+                                (!isEmailFilled && isPasswordFilled) ||
+                                (isEmailFilled && !isPasswordFilled)
                             }
                             style={styles.checkbox}
                             onValueChange={setIsCheckboxMarked}
                             color={colors.blue_100}
                         />
+
                         <Text style={styles.checkboxText}>Lembrar meus dados</Text>
                     </View>
+
+                    {user.error && (
+                        <Text
+                            style={{ backgroundColor: colors.blue_50, padding: 8, color: colors.red, borderRadius: 8 }}
+                        >
+                            {user.error}
+                        </Text>
+                    )}
 
                     <TouchableOpacity style={styles.button} onPress={onLoginPress} activeOpacity={0.75}>
                         {!isMainMenuLoading && <Text style={styles.buttonText}>Login</Text>}
                         {isMainMenuLoading && (
                             <View style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}>
-                                <Text style={styles.buttonText}>Conectando</Text>
                                 <ActivityIndicator size={'small'} color={colors.blue_900} />
+                                <Text style={styles.buttonText}>Conectando</Text>
                             </View>
                         )}
                     </TouchableOpacity>

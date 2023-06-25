@@ -2,13 +2,18 @@ import * as Notifications from 'expo-notifications';
 import { useRouter, useSegments } from 'expo-router';
 import { createContext, useContext, useEffect, useState } from 'react';
 import Toast from 'react-native-toast-message';
+import { apiClient, baseNotificationsURL } from '../services/axios';
 
 const AuthContext = createContext(null);
 
 interface userLogin {
     email: string;
-    senha: string;
-    bairro: string;
+    password: string;
+}
+
+interface userData {
+    token: string;
+    district: string;
 }
 
 // This hook can be used to access the user info.
@@ -17,7 +22,7 @@ export function useAuth() {
 }
 
 // This hook will protect the route access based on user authentication.
-function useProtectedRoute(user) {
+function useProtectedRoute(user: userData) {
     const segments = useSegments();
     const router = useRouter();
 
@@ -26,32 +31,26 @@ function useProtectedRoute(user) {
 
         if (
             // If the user is not signed in and the initial segment is not anything in the auth group.
-            !user.email &&
+            !user.token &&
             !inAuthGroup
         ) {
             // Redirect to the sign-in page.
             router.replace('/signIn');
-        } else if (user.email.toLowerCase().includes('agent') && inAuthGroup) {
+        } else if (user.token && inAuthGroup) {
             // Redirect away from the sign-in page.
             router.replace('/agentMainMenu');
-        } else if (user.email && inAuthGroup) {
+        } else if (user.token && inAuthGroup) {
             // Redirect away from the sign-in page.
             router.replace('/userMainMenu');
         }
     }, [user, segments]);
 }
 
-async function listenForNotifications(
-    isListening: boolean,
-    setIsListening: React.Dispatch<React.SetStateAction<boolean>>,
-    user: userLogin
-) {
-    let baseUrl = '192.168.0.109';
-
+async function listenForNotifications(setIsListening: React.Dispatch<React.SetStateAction<boolean>>, user: userData) {
     useEffect(() => {
-        if (!user.email && !user.senha) return;
+        if (!user.token) return;
 
-        const webSocket = new WebSocket(`ws:${baseUrl}/notifsTeste/ws`);
+        const webSocket = new WebSocket(`ws:${baseNotificationsURL}/notifsTeste/ws`);
 
         webSocket.onopen = async () => {
             setIsListening(true);
@@ -97,34 +96,43 @@ async function listenForNotifications(
 
 export function Provider(props) {
     const [user, setAuth] = useState({
-        email: '',
-        senha: '',
-        bairro: '',
+        token: '',
+        district: '',
+        error: '',
     });
 
     const [isListeningForNotifications, setIsListeningForNotifications] = useState(false);
 
-    function signIn({ email, senha, bairro }: userLogin) {
-        // console.log(email);
-        // console.log(senha);
-        // console.log(bairro);
-        setAuth({
-            email,
-            senha,
-            bairro,
-        });
+    async function signIn({ email, password }: userLogin) {
+        apiClient
+            .post('/login', {
+                login: email,
+                password,
+            })
+            .then((response) => {
+                console.log(response.data);
+                setAuth({
+                    token: response.data.token,
+                    district: 'Centro',
+                    error: '',
+                });
+            })
+            .catch((error) => {
+                console.log(`Erro no login: ${error}`);
+                setAuth({ token: '', district: '', error: 'Ops :( erro no login, por favor confirme seus dados' });
+            });
     }
 
     function signOut() {
         setAuth({
-            email: '',
-            senha: '',
-            bairro: '',
+            token: '',
+            district: '',
+            error: '',
         });
     }
 
     useProtectedRoute(user);
-    listenForNotifications(isListeningForNotifications, setIsListeningForNotifications, user);
+    listenForNotifications(setIsListeningForNotifications, user);
 
     return (
         <AuthContext.Provider
