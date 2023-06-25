@@ -7,15 +7,23 @@ interface ActionFeedbackModalProps {
     isModalOpen: boolean;
     setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
     feedbackMessage: string;
+    onDismissFunction?: () => void;
 }
 export default function ActionFeedbackModal({
     isActionSuccessful,
     isModalOpen,
     setIsModalOpen,
     feedbackMessage,
+    onDismissFunction,
 }: ActionFeedbackModalProps) {
     return (
-        <Modal transparent animationType='fade' visible={isModalOpen} onRequestClose={() => setIsModalOpen(false)}>
+        <Modal
+            transparent
+            animationType='fade'
+            visible={isModalOpen}
+            onDismiss={onDismissFunction}
+            onRequestClose={() => setIsModalOpen(false)}
+        >
             <View style={styles.modalBackground}>
                 <View style={styles.modalWrapper}>
                     {isActionSuccessful && (

@@ -1,22 +1,56 @@
+import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import ActionFeedbackModal from '../src/components/ActionFeedbackModal';
 import Header from '../src/components/Header';
 import InputDark from '../src/components/InputDark';
 import Picker from '../src/components/Picker';
+import { useAuth } from '../src/contexts/login-and-notifications-context';
 import Categories from '../src/newsCategories.json';
+import { apiClient } from '../src/services/axios';
 import colors from '../src/styles/colors';
 import fonts from '../src/styles/fonts';
 
 export default function CreateNews() {
+    const router = useRouter();
+
     const [category, setCategory] = useState('');
     const [newsTitle, setNewsTitle] = useState('');
     const [isNewsTitleFocused, setIsNewsTitleFocused] = useState(false);
     const [newsDescription, setNewsDescription] = useState('');
     const [isNewsDescriptionFocused, setIsNewsDescriptionFocused] = useState(false);
+    const [isErrorOnCreatingNewsModalOpen, setIsErrorOnCreatingNewsModalOpen] = useState(false);
+    const [isCreatingNewsSuccesfulModalOpen, setIsCreatingNewsSuccesfulModalOpen] = useState(false);
+
+    const { user } = useAuth();
+
+    async function postNews() {
+        apiClient
+            .post(
+                '/notices',
+                {
+                    category,
+                    title: newsTitle,
+                    description: newsDescription,
+                },
+                { headers: { Authorization: `Bearer ${user.token}` } }
+            )
+            .then((response) => {
+                //console.log(response.data);
+                setIsCreatingNewsSuccesfulModalOpen(true);
+                setCategory('');
+                setNewsDescription('');
+                setNewsTitle('');
+            })
+            .catch((error) => {
+                console.log(error);
+                setIsErrorOnCreatingNewsModalOpen(true);
+            });
+    }
 
     return (
         <View style={styles.container}>
-            <Header />
+            <Header showCloseIcon />
 
             <View style={styles.formContainer}>
                 <Text style={styles.subtitle}>Publicar notícia:</Text>
@@ -49,9 +83,24 @@ export default function CreateNews() {
                     />
                 </View>
 
-                <TouchableOpacity activeOpacity={0.8} style={styles.button}>
+                <TouchableOpacity activeOpacity={0.8} style={styles.button} onPress={postNews}>
                     <Text style={styles.buttonText}>Enviar</Text>
                 </TouchableOpacity>
+
+                <ActionFeedbackModal
+                    feedbackMessage='Ops :( Houve um erro ao tentar criar a notícia. Tente novamente em alguns instantes'
+                    isActionSuccessful={false}
+                    isModalOpen={isErrorOnCreatingNewsModalOpen}
+                    setIsModalOpen={setIsErrorOnCreatingNewsModalOpen}
+                />
+
+                <ActionFeedbackModal
+                    feedbackMessage='Notícia criada com sucesso!'
+                    isActionSuccessful={true}
+                    isModalOpen={isCreatingNewsSuccesfulModalOpen}
+                    setIsModalOpen={setIsCreatingNewsSuccesfulModalOpen}
+                    onDismissFunction={() => router.back()}
+                />
             </View>
         </View>
     );

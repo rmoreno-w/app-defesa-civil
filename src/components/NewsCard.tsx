@@ -1,29 +1,38 @@
 import { Feather } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { formatTime } from '../services/formatTime';
 import colors from '../styles/colors';
 import fonts from '../styles/fonts';
 
-export default function NewsCard() {
+interface NewsProps {
+    category: string;
+    created_at: string;
+    description: string;
+    title: string;
+    id: string;
+}
+export default function NewsCard({ category, created_at, description, id, title }: NewsProps) {
     const router = useRouter();
 
     function navigateOnPress() {
-        router.push('/newsDetails');
+        router.push(`/newsDetails?id=${id}`);
     }
 
     return (
         <TouchableOpacity style={styles.newsContainer} activeOpacity={0.5} onPress={navigateOnPress}>
             <View style={styles.newsContentContainer}>
-                <Text style={styles.title}>Titulo Notícia</Text>
-                <Text style={styles.dateAndTime}>24/07/2023 - 14:53</Text>
+                <Text style={styles.title}>{title}</Text>
+                <Text style={styles.dateAndTime}>{formatTime(created_at)}</Text>
                 <Text style={styles.content} ellipsizeMode='tail' numberOfLines={4}>
-                    Texto da Notícia meio grandinho bó encher Texto da Notícia meio grandinho bó encher Texto da Notícia
-                    meio grandinho bó encher Texto da Notícia meio grandinho bó encher Texto da Notícia meio grandinho
-                    text text bó encher
+                    {description}
                 </Text>
             </View>
             <View style={styles.iconContainer}>
-                <Feather name='cloud-lightning' size={64} color={colors.blue_600} />
+                {category == 'EDUCATIONAL' && <Feather name='book-open' size={64} color={colors.green} />}
+                {category == 'WARNING' && <Feather name='alert-triangle' size={64} color={colors.red} />}
+                {category == 'METEOROLOGY' && <Feather name='cloud-lightning' size={64} color={colors.blue_400} />}
+                {category == 'OTHERS' && <Feather name='tool' size={64} color={colors.blue_600} />}
             </View>
         </TouchableOpacity>
     );
