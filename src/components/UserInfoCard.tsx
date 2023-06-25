@@ -1,7 +1,9 @@
 import { Ionicons } from '@expo/vector-icons';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useAuth } from '../contexts/login-and-notifications-context';
+import { apiClient } from '../services/axios';
+import { formatPhoneNumber } from '../services/formatPhone';
 import colors from '../styles/colors';
 import fonts from '../styles/fonts';
 import InputDark from './InputDark';
@@ -11,16 +13,35 @@ interface ModalProps {
     setIsModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
 }
 export default function UserInfoCard({ isModalVisible, setIsModalVisible }: ModalProps) {
+    const { user, signOut } = useAuth();
+
     const [completeName, setCompleteName] = useState('Adelindo Silva');
     const [isCompleteNameFilled, setIsCompleteNameFilled] = useState(false);
     const [email, setEmail] = useState('adelindo@email.com');
     const [isEmailFilled, setIsEmailFilled] = useState(false);
-    const [phone, setPhone] = useState('(35) 99876-5432');
+    const [phone, setPhone] = useState('');
     const [isPhoneFilled, setIsPhoneFilled] = useState(false);
-    const [district, setDistrict] = useState('Centro');
+    const [district, setDistrict] = useState('');
     const [isDistrictFilled, setIsDistrictFilled] = useState(false);
 
-    const { user, signOut } = useAuth();
+    useEffect(() => {
+        async function loadUserData() {
+            apiClient
+                .get('/users/me', {
+                    headers: {
+                        Authorization: `Bearer ${user.token}`,
+                    },
+                })
+                .then((userData) => {
+                    setCompleteName(userData.data.name);
+                    setEmail(userData.data.email);
+                    setDistrict(userData.data.district_name);
+                    setPhone(formatPhoneNumber(userData.data.telephone));
+                })
+                .catch((e) => console.log(e));
+        }
+        loadUserData();
+    }, []);
 
     function modalDismiss() {
         setIsModalVisible(false);
@@ -38,7 +59,7 @@ export default function UserInfoCard({ isModalVisible, setIsModalVisible }: Moda
                     <View style={styles.modalHeader}>
                         <View style={styles.userPortrait}>
                             <Ionicons name='person-circle-outline' color={colors.blue_600} size={40} />
-                            <Text style={styles.userName}>UserName</Text>
+                            <Text style={styles.userName}>{completeName}</Text>
                         </View>
 
                         <TouchableOpacity activeOpacity={0.5} onPress={signOut1} style={styles.logoutButton}>

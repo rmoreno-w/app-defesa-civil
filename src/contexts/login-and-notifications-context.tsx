@@ -14,6 +14,7 @@ interface userLogin {
 interface userData {
     token: string;
     district: string;
+    role: string;
 }
 
 // This hook can be used to access the user info.
@@ -36,10 +37,10 @@ function useProtectedRoute(user: userData) {
         ) {
             // Redirect to the sign-in page.
             router.replace('/signIn');
-        } else if (user.token && inAuthGroup) {
+        } else if (user.role == 'AGENT' && inAuthGroup) {
             // Redirect away from the sign-in page.
             router.replace('/agentMainMenu');
-        } else if (user.token && inAuthGroup) {
+        } else if (user.role && inAuthGroup) {
             // Redirect away from the sign-in page.
             router.replace('/userMainMenu');
         }
@@ -48,7 +49,7 @@ function useProtectedRoute(user: userData) {
 
 async function listenForNotifications(setIsListening: React.Dispatch<React.SetStateAction<boolean>>, user: userData) {
     useEffect(() => {
-        if (!user.token) return;
+        if (!user.token || user.role == 'AGENT') return;
 
         const webSocket = new WebSocket(`ws:${baseNotificationsURL}/notifsTeste/ws`);
 
@@ -98,7 +99,9 @@ export function Provider(props) {
     const [user, setAuth] = useState({
         token: '',
         district: '',
+        role: '',
         error: '',
+        id: '',
     });
 
     const [isListeningForNotifications, setIsListeningForNotifications] = useState(false);
@@ -106,20 +109,28 @@ export function Provider(props) {
     async function signIn({ email, password }: userLogin) {
         apiClient
             .post('/login', {
-                login: email,
-                password,
+                login: 'agent@email.com',
+                password: 'Agent!123456789',
             })
             .then((response) => {
                 console.log(response.data);
                 setAuth({
                     token: response.data.token,
-                    district: 'Centro',
+                    district: response.data.district ? response.data.district : '',
+                    role: response.data.role,
                     error: '',
+                    id: '',
                 });
             })
             .catch((error) => {
                 console.log(`Erro no login: ${error}`);
-                setAuth({ token: '', district: '', error: 'Ops :( erro no login, por favor confirme seus dados' });
+                setAuth({
+                    token: '',
+                    district: '',
+                    role: '',
+                    error: 'Ops :( erro no login, por favor confirme seus dados',
+                    id: '',
+                });
             });
     }
 
@@ -127,7 +138,9 @@ export function Provider(props) {
         setAuth({
             token: '',
             district: '',
+            role: '',
             error: '',
+            id: '',
         });
     }
 
