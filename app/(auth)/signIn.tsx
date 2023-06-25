@@ -2,9 +2,10 @@ import { Pridi_700Bold } from '@expo-google-fonts/pridi';
 import { WorkSans_400Regular, WorkSans_700Bold, useFonts } from '@expo-google-fonts/work-sans';
 import Checkbox from 'expo-checkbox';
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import ActionFeedbackModal from '../../src/components/ActionFeedbackModal';
 import Input from '../../src/components/Input';
 import { useAuth } from '../../src/contexts/login-and-notifications-context';
 import colors from '../../src/styles/colors';
@@ -12,7 +13,7 @@ import fonts from '../../src/styles/fonts';
 
 export default function loginPageLayout() {
     const router = useRouter();
-    const { signIn, user } = useAuth();
+    const { signIn } = useAuth();
 
     const [email, setEmail] = useState('');
     const [isEmailFilled, setIsEmailFilled] = useState(false);
@@ -20,6 +21,18 @@ export default function loginPageLayout() {
     const [isPasswordFilled, setIsPasswordFilled] = useState(false);
     const [isCheckboxMarked, setIsCheckboxMarked] = useState(false);
     const [isMainMenuLoading, setIsMainMenuLoading] = useState(false);
+    const [isErrorModalOpen, setIserrorModalOpen] = useState(false);
+    const [signinErrorMessage, setSigninErrorMessage] = useState('');
+
+    useEffect(() => {
+        // Se houver mudanca na mensagem (recebeu erro do login), alterar o modal pra open
+        setIserrorModalOpen(Boolean(signinErrorMessage));
+    }, [signinErrorMessage]);
+
+    useEffect(() => {
+        // Se fechar o modal, setar mensagem pra vazia -> Pra caso tentar login 2x errado mostrar modal 2x
+        !isErrorModalOpen && setSigninErrorMessage('');
+    }, [isErrorModalOpen]);
 
     const [fontsLoaded] = useFonts({
         WorkSans_400Regular,
@@ -35,10 +48,11 @@ export default function loginPageLayout() {
         router.push('/signUp');
     }
 
-    function onLoginPress() {
+    async function onLoginPress() {
         if (email && password) {
             setIsMainMenuLoading(true);
-            signIn({ email, password, bairro: 'BPS' });
+            const receivedSigninErrorMessage = await signIn({ email, password });
+            setSigninErrorMessage(receivedSigninErrorMessage);
             setIsMainMenuLoading(false);
         }
     }
@@ -85,12 +99,13 @@ export default function loginPageLayout() {
                         <Text style={styles.checkboxText}>Lembrar meus dados</Text>
                     </View>
 
-                    {user.error && (
-                        <Text
-                            style={{ backgroundColor: colors.blue_50, padding: 8, color: colors.red, borderRadius: 8 }}
-                        >
-                            {user.error}
-                        </Text>
+                    {isErrorModalOpen && (
+                        <ActionFeedbackModal
+                            feedbackMessage={signinErrorMessage}
+                            isActionSuccessful={false}
+                            isModalOpen={isErrorModalOpen}
+                            setIsModalOpen={setIserrorModalOpen}
+                        />
                     )}
 
                     <TouchableOpacity style={styles.button} onPress={onLoginPress} activeOpacity={0.75}>

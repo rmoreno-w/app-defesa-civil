@@ -1,7 +1,7 @@
-import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { ActivityIndicator, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import ActionFeedbackModal from '../../src/components/ActionFeedbackModal';
 import Input from '../../src/components/Input';
 import colors from '../../src/styles/colors';
 import fonts from '../../src/styles/fonts';
@@ -9,7 +9,7 @@ import fonts from '../../src/styles/fonts';
 export default function SignUp() {
     const router = useRouter();
 
-    const [isSignupLoading, setIsSignupLoading] = useState(false);
+    const [isSignupLoading, setIsSignupLoading] = useState(true);
     const [completeName, setCompleteName] = useState('');
     const [isCompleteNameFilled, setIsCompleteNameFilled] = useState(false);
     const [email, setEmail] = useState('');
@@ -121,59 +121,23 @@ export default function SignUp() {
                             </View>
                         )}
                     </TouchableOpacity>
-                    <Modal visible={isSignupLoading} animationType='slide' transparent onRequestClose={dismissModal}>
-                        <View style={styles.modalBg}>
-                            <View style={styles.modalWrapper}>
-                                {isSignupSuccessful && (
-                                    <View style={{ alignItems: 'center', gap: 16 }}>
-                                        <View
-                                            style={{
-                                                backgroundColor: colors.green,
-                                                height: 36,
-                                                width: 36,
-                                                borderRadius: 18,
-                                                justifyContent: 'center',
-                                                alignItems: 'center',
-                                            }}
-                                        >
-                                            <MaterialCommunityIcons
-                                                name='check-bold'
-                                                size={32}
-                                                color={colors.blue_50}
-                                            />
-                                        </View>
-                                        <Text>Cadastro realizado com sucesso!</Text>
-                                    </View>
-                                )}
 
-                                {!isSignupSuccessful && (
-                                    <View style={{ alignItems: 'center', gap: 16 }}>
-                                        <View
-                                            style={{
-                                                backgroundColor: colors.red,
-                                                height: 36,
-                                                width: 36,
-                                                borderRadius: 18,
-                                                justifyContent: 'center',
-                                                alignItems: 'center',
-                                            }}
-                                        >
-                                            <MaterialCommunityIcons name='close' size={32} color={colors.blue_50} />
-                                        </View>
-                                        <Text>Erro ao Cadastrar, tente novamente</Text>
-                                    </View>
-                                )}
-
-                                <TouchableOpacity
-                                    style={{ backgroundColor: colors.blue_100, padding: 16, borderRadius: 8 }}
-                                    onPress={dismissModal}
-                                    activeOpacity={0.75}
-                                >
-                                    <Text style={{ textAlign: 'center' }}>Ok</Text>
-                                </TouchableOpacity>
-                            </View>
-                        </View>
-                    </Modal>
+                    {isSignupLoading && isSignupSuccessful && (
+                        <ActionFeedbackModal
+                            feedbackMessage='Cadastro realizado com sucesso'
+                            isActionSuccessful={true}
+                            isModalOpen={isSignupSuccessful}
+                            setIsModalOpen={setIsSignupSuccessful}
+                        />
+                    )}
+                    {isSignupLoading && !isSignupSuccessful && (
+                        <ActionFeedbackModal
+                            feedbackMessage='Erro ao Cadastrar, tente novamente'
+                            isActionSuccessful={false}
+                            isModalOpen={isSignupSuccessful}
+                            setIsModalOpen={setIsSignupSuccessful}
+                        />
+                    )}
                 </ScrollView>
             </View>
         </View>

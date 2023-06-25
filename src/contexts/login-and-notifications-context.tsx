@@ -15,6 +15,7 @@ interface userData {
     token: string;
     district: string;
     role: string;
+    id: string;
 }
 
 // This hook can be used to access the user info.
@@ -77,7 +78,7 @@ async function listenForNotifications(setIsListening: React.Dispatch<React.SetSt
         };
 
         const subscription = Notifications.addNotificationReceivedListener((notification) => {
-            console.log(notification.request.content.body);
+            // console.log(notification.request.content.body);
             notification.request.content.body &&
                 Toast.show({
                     type: 'error',
@@ -96,29 +97,29 @@ async function listenForNotifications(setIsListening: React.Dispatch<React.SetSt
 }
 
 export function Provider(props) {
-    const [user, setAuth] = useState({
+    const [user, setAuth] = useState<userData>({
         token: '',
         district: '',
         role: '',
-        error: '',
         id: '',
     });
 
     const [isListeningForNotifications, setIsListeningForNotifications] = useState(false);
 
     async function signIn({ email, password }: userLogin) {
-        apiClient
+        await apiClient
             .post('/login', {
-                login: 'agent@email.com',
-                password: 'Agent!123456789',
+                // login: 'agent@email.com',
+                // password: 'Agent!123456789',
+                login: email,
+                password: password,
             })
             .then((response) => {
-                console.log(response.data);
+                // console.log(response.data);
                 setAuth({
                     token: response.data.token,
                     district: response.data.district ? response.data.district : '',
                     role: response.data.role,
-                    error: '',
                     id: '',
                 });
             })
@@ -128,10 +129,15 @@ export function Provider(props) {
                     token: '',
                     district: '',
                     role: '',
-                    error: 'Ops :( erro no login, por favor confirme seus dados',
                     id: '',
                 });
             });
+
+        if (!user.token) {
+            return 'Ops :( erro no login, por favor confirme seus dados';
+        } else {
+            return '';
+        }
     }
 
     function signOut() {
@@ -139,7 +145,6 @@ export function Provider(props) {
             token: '',
             district: '',
             role: '',
-            error: '',
             id: '',
         });
     }

@@ -48,7 +48,6 @@ export default function UserInfoCard({ isModalVisible, setIsModalVisible }: Moda
     }
 
     function signOut1() {
-        console.log(user.email);
         signOut();
     }
 
