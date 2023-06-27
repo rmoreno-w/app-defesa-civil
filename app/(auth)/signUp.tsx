@@ -3,13 +3,21 @@ import { useState } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import ActionFeedbackModal from '../../src/components/ActionFeedbackModal';
 import Input from '../../src/components/Input';
+import Picker from '../../src/components/Picker';
+import importedDistricts from '../../src/districts.json';
+import { apiClient } from '../../src/services/axios';
 import colors from '../../src/styles/colors';
 import fonts from '../../src/styles/fonts';
 
 export default function SignUp() {
     const router = useRouter();
 
-    const [isSignupLoading, setIsSignupLoading] = useState(true);
+    const neww = Object.values(importedDistricts);
+    const { 0: districtsArray } = neww;
+    const values = districtsArray.map((item) => ({ label: item, value: item }));
+    const formattedDistricts = { values };
+
+    const [isSignupLoading, setIsSignupLoading] = useState(false);
     const [completeName, setCompleteName] = useState('');
     const [isCompleteNameFilled, setIsCompleteNameFilled] = useState(false);
     const [email, setEmail] = useState('');
@@ -18,8 +26,8 @@ export default function SignUp() {
     const [isPasswordFilled, setIsPasswordFilled] = useState(false);
     const [phone, setPhone] = useState('');
     const [isPhoneFilled, setIsPhoneFilled] = useState(false);
-    const [adress, setAdress] = useState('');
-    const [isAdressFilled, setIsAdressFilled] = useState(false);
+    const [address, setAddress] = useState('');
+    const [isAddressFilled, setIsAddressFilled] = useState(false);
     const [houseNumber, setHouseNumber] = useState('');
     const [isHouseNumberFilled, setIsHouseNumberFilled] = useState(false);
     const [district, setDistrict] = useState('');
@@ -27,16 +35,52 @@ export default function SignUp() {
     const [cep, setCep] = useState('');
     const [isCepFilled, setIsCepFilled] = useState(false);
     const [isSignupSuccessful, setIsSignupSuccessful] = useState(false);
+    const [isErrorOnSigninupModalOpen, setIsErrorSigningUpModalOpen] = useState(false);
 
-    function onSignupPress() {
-        // if (completeName && email && password && phone && adress && houseNumber && district && cep) {
-        setIsSignupLoading(true);
-        // }
-    }
-
-    function dismissModal() {
-        setIsSignupLoading(false);
-        router.replace('/signIn');
+    async function onSignupPress() {
+        // console.log(completeName);
+        // console.log(email);
+        // console.log(password);
+        // console.log(phone);
+        // console.log(address);
+        // console.log(houseNumber);
+        // console.log(district);
+        // console.log(cep);
+        if (completeName && email && password && phone && address && houseNumber && district && cep) {
+            setIsSignupLoading(true);
+            apiClient
+                .post('/users', {
+                    name: completeName,
+                    email,
+                    password,
+                    telephone: phone,
+                    address: {
+                        number: houseNumber,
+                        street: address,
+                        district: district,
+                        cep,
+                    },
+                })
+                .then((response) => {
+                    //console.log(response.data);
+                    setIsSignupLoading(false);
+                    setIsSignupSuccessful(true);
+                    setCompleteName('');
+                    setEmail('');
+                    setPassword('');
+                    setPhone('');
+                    setHouseNumber('');
+                    setAddress('');
+                    setDistrict('');
+                    setCep('');
+                })
+                .catch((error) => {
+                    console.log(error.toJSON());
+                    setIsSignupLoading(false);
+                    // setIsErrorOnCreatingIncidentModalOpen(true);
+                    setIsErrorSigningUpModalOpen(true);
+                });
+        }
     }
 
     return (
@@ -90,18 +134,17 @@ export default function SignUp() {
 
                     <Input
                         label='Rua'
-                        inputData={adress}
+                        inputData={address}
                         placeholder=''
-                        setInputFunction={setAdress}
-                        setIsInputFilled={setIsAdressFilled}
+                        setInputFunction={setAddress}
+                        setIsInputFilled={setIsAddressFilled}
                     />
 
-                    <Input
+                    <Picker
+                        chosenItem={district}
+                        itemsToDisplay={formattedDistricts}
                         label='Bairro'
-                        inputData={district}
-                        placeholder=''
-                        setInputFunction={setDistrict}
-                        setIsInputFilled={setIsDistrictFilled}
+                        setChosenItem={setDistrict}
                     />
 
                     <Input
@@ -122,20 +165,21 @@ export default function SignUp() {
                         )}
                     </TouchableOpacity>
 
-                    {isSignupLoading && isSignupSuccessful && (
+                    {isSignupSuccessful && (
                         <ActionFeedbackModal
-                            feedbackMessage='Cadastro realizado com sucesso'
+                            feedbackMessage='Cadastro realizado com sucesso!'
                             isActionSuccessful={true}
                             isModalOpen={isSignupSuccessful}
                             setIsModalOpen={setIsSignupSuccessful}
+                            onDismissFunction={() => router.back()}
                         />
                     )}
-                    {isSignupLoading && !isSignupSuccessful && (
+                    {!isSignupSuccessful && (
                         <ActionFeedbackModal
-                            feedbackMessage='Erro ao Cadastrar, tente novamente'
+                            feedbackMessage='Ops :( Houve um erro ao tentar realizar seu Cadastro. Tente novamente em alguns instantes'
                             isActionSuccessful={false}
-                            isModalOpen={isSignupSuccessful}
-                            setIsModalOpen={setIsSignupSuccessful}
+                            isModalOpen={isErrorOnSigninupModalOpen}
+                            setIsModalOpen={setIsErrorSigningUpModalOpen}
                         />
                     )}
                 </ScrollView>

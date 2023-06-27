@@ -1,15 +1,39 @@
 import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Header from '../src/components/Header';
 import UserMainMenuOption from '../src/components/MainMenuOptions/UserOption';
 import NewsCard from '../src/components/NewsCard';
 import UserInfoCard from '../src/components/UserInfoCard';
+import { useAuth } from '../src/contexts/login-and-notifications-context';
+import { apiClient } from '../src/services/axios';
 import colors from '../src/styles/colors';
 import fonts from '../src/styles/fonts';
+import { News } from './newsFeed';
 
 export default function UserMainMenu() {
+    const { user } = useAuth();
+
+    const [news, setNews] = useState<News[]>([]);
+    const [errorLoading, setErrorLoading] = useState('');
+
+    useEffect(() => {
+        async function loadNews() {
+            apiClient
+                .get('/notices', { headers: { Authorization: `Bearer ${user.token}` } })
+                .then((receivedNews) => {
+                    // console.log(receivedNews.data);
+                    setNews(receivedNews.data.slice(0, 5));
+                })
+                .catch((error) => {
+                    console.log(error);
+                    setErrorLoading('Ops! :( Ocorreu um erro ao carregar as Notícias');
+                });
+        }
+
+        loadNews();
+    }, []);
     const [isUserCardVisible, setIsUserCardVisible] = useState(false);
 
     return (
@@ -31,9 +55,17 @@ export default function UserMainMenu() {
                 <Text style={styles.subtitle}>Últimas notícias:</Text>
 
                 <FlatList
-                    data={[1, 2, 3, 4, 5]}
-                    keyExtractor={(newsItem) => String(newsItem)}
-                    renderItem={(newsItem) => <NewsCard />}
+                    data={news}
+                    keyExtractor={(item) => item.id}
+                    renderItem={({ item }) => (
+                        <NewsCard
+                            category={item.category}
+                            created_at={item.created_at}
+                            description={item.description}
+                            id={item.id}
+                            title={item.title}
+                        />
+                    )}
                     contentContainerStyle={{ gap: 12, paddingBottom: 285 }}
                     // style={{ backgroundColor: 'yellow' }}
                     showsVerticalScrollIndicator={false}

@@ -41,7 +41,7 @@ function useProtectedRoute(user: userData) {
         } else if (user.role == 'AGENT' && inAuthGroup) {
             // Redirect away from the sign-in page.
             router.replace('/agentMainMenu');
-        } else if (user.role && inAuthGroup) {
+        } else if (user.role == 'USER' && inAuthGroup) {
             // Redirect away from the sign-in page.
             router.replace('/userMainMenu');
         }
@@ -109,16 +109,20 @@ export function Provider(props) {
     async function signIn({ email, password }: userLogin) {
         await apiClient
             .post('/login', {
-                login: 'agent@email.com',
-                password: 'Agent!123456789',
+                //Agente
+                // login: 'agent@email.com',
+                // password: 'Agent!123456789',
+                //User
+                login: 'user7@email.com',
+                password: 'User!123456789',
                 // login: email,
                 // password: password,
             })
             .then((response) => {
-                console.log(response.data);
+                // console.log(response.data);
                 setAuth({
                     token: response.data.token,
-                    district: response.data.district ? response.data.district : '',
+                    district: response.data.district,
                     role: response.data.role,
                     id: '',
                 });
