@@ -47,7 +47,7 @@ export default function IncidentsAnalysis() {
             apiClient
                 .get('/incidents', { headers: { Authorization: `Bearer ${user.token}` } })
                 .then((receivedData) => {
-                    console.log(receivedData.data);
+                    // console.log(receivedData.data);
                     setIncidents(receivedData.data);
                     // setNews(receivedNews.data);
                 })

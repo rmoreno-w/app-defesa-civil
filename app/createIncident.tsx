@@ -6,7 +6,7 @@ import ActionFeedbackModal from '../src/components/ActionFeedbackModal';
 import Header from '../src/components/Header';
 import InputDark from '../src/components/InputDark';
 import MultiPicker from '../src/components/MultiPicker';
-import Picker from '../src/components/Picker';
+import Picker from '../src/components/PickerDark';
 import { useAuth } from '../src/contexts/login-and-notifications-context';
 import importedDistricts from '../src/districts.json';
 import incidentsCategories from '../src/incidentsCategories.json';

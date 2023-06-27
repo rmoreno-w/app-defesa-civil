@@ -15,6 +15,8 @@ interface ModalProps {
 export default function UserInfoCard({ isModalVisible, setIsModalVisible }: ModalProps) {
     const { user, signOut } = useAuth();
 
+    // console.log(user.)
+
     const [completeName, setCompleteName] = useState('Adelindo Silva');
     const [isCompleteNameFilled, setIsCompleteNameFilled] = useState(false);
     const [email, setEmail] = useState('adelindo@email.com');
@@ -35,7 +37,7 @@ export default function UserInfoCard({ isModalVisible, setIsModalVisible }: Moda
                 .then((userData) => {
                     setCompleteName(userData.data.name);
                     setEmail(userData.data.email);
-                    setDistrict(userData.data.district_name);
+                    setDistrict(user.district);
                     setPhone(formatPhoneNumber(userData.data.telephone));
                 })
                 .catch((e) => console.log(e));

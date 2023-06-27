@@ -8,7 +8,7 @@ import { apiClient } from '../src/services/axios';
 import colors from '../src/styles/colors';
 import fonts from '../src/styles/fonts';
 
-interface News {
+export interface News {
     agent_id: string;
     category: string;
     created_at: string;
@@ -29,10 +29,13 @@ export default function NewsFeed() {
             apiClient
                 .get('/notices', { headers: { Authorization: `Bearer ${user.token}` } })
                 .then((receivedNews) => {
-                    console.log(receivedNews.data);
+                    // console.log(receivedNews.data);
                     setNews(receivedNews.data);
                 })
-                .catch((error) => console.log(error));
+                .catch((error) => {
+                    console.log(error);
+                    setErrorLoading('Ops! :( Ocorreu um erro ao carregar as Notícias');
+                });
         }
 
         loadNews();

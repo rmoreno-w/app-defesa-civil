@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Header from '../src/components/Header';
 import InputDark from '../src/components/InputDark';
-import Picker from '../src/components/Picker';
+import Picker from '../src/components/PickerDark';
 import importedDistricts from '../src/districts.json';
 import incidentsCategories from '../src/incidentsCategories.json';
 import colors from '../src/styles/colors';

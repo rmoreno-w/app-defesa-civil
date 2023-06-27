@@ -4,7 +4,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import ActionFeedbackModal from '../src/components/ActionFeedbackModal';
 import Header from '../src/components/Header';
 import InputDark from '../src/components/InputDark';
-import Picker from '../src/components/Picker';
+import Picker from '../src/components/PickerDark';
 import { useAuth } from '../src/contexts/login-and-notifications-context';
 import Categories from '../src/newsCategories.json';
 import { apiClient } from '../src/services/axios';

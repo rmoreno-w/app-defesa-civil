@@ -71,14 +71,14 @@ const styles = StyleSheet.create({
         gap: 6,
     },
     label: {
-        color: colors.blue_50,
+        color: colors.blue_600,
     },
     input: {
         padding: 16,
         backgroundColor: colors.blue_50,
         borderStyle: 'solid',
         borderWidth: 2,
-        borderColor: colors.blue_300,
+        borderColor: colors.blue_600,
         color: colors.blue_900,
         width: '100%',
         fontSize: 16,

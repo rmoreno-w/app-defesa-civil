@@ -74,7 +74,7 @@ export default function WeatherForecast() {
                     setTodayWeatherForecast(receivedData.data[0]);
                     setTomorrowWeatherForecast(receivedData.data[1]);
                     setChosenDayData(receivedData.data[0]);
-                    console.log(receivedData.data);
+                    // console.log(receivedData.data);
                 })
                 .catch((error) => console.log(error));
         }
