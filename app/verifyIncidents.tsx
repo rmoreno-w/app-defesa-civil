@@ -1,10 +1,35 @@
+import { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Header from '../src/components/Header';
 import Incident from '../src/components/Incident';
+import { useAuth } from '../src/contexts/login-and-notifications-context';
+import { apiClient } from '../src/services/axios';
 import colors from '../src/styles/colors';
 import fonts from '../src/styles/fonts';
+import { Incident as IncidentType } from './incidentsAnalysis';
 
 export default function VerifyIncidents() {
+    const { user } = useAuth();
+    const [incidents, setIncidents] = useState<Array<IncidentType>>([]);
+
+    useEffect(() => {
+        async function loadIncidents() {
+            apiClient
+                // .get(`/incidents/by-district?district-name=${user.district}`, {
+                .get(`/incidents`, {
+                    headers: { Authorization: `Bearer ${user.token}` },
+                })
+                .then((receivedData) => {
+                    // console.log(receivedData.data);
+                    setIncidents(receivedData.data);
+                    // setNews(receivedNews.data);
+                })
+                .catch((error) => console.log(error));
+        }
+
+        loadIncidents();
+    }, []);
+
     return (
         <View style={styles.container}>
             <Header showCloseIcon />

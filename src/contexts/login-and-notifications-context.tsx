@@ -52,7 +52,7 @@ async function listenForNotifications(setIsListening: React.Dispatch<React.SetSt
     useEffect(() => {
         if (!user.token || user.role == 'AGENT') return;
 
-        const webSocket = new WebSocket(`ws:${baseNotificationsURL}/notifsTeste/ws`);
+        const webSocket = new WebSocket(`ws:${baseNotificationsURL}/${user.district}/ws`);
 
         webSocket.onopen = async () => {
             setIsListening(true);
@@ -113,10 +113,10 @@ export function Provider(props) {
                 // login: 'agent@email.com',
                 // password: 'Agent!123456789',
                 //User
-                login: 'user7@email.com',
-                password: 'User!123456789',
-                // login: email,
-                // password: password,
+                // login: 'user7@email.com',
+                // password: 'User!123456789',
+                login: email,
+                password: password,
             })
             .then((response) => {
                 // console.log(response.data);

@@ -10,7 +10,7 @@ import { getTime } from '../src/services/getTime';
 import colors from '../src/styles/colors';
 import fonts from '../src/styles/fonts';
 
-interface Incident {
+export interface Incident {
     category: string;
     created_at: string;
     description: string;

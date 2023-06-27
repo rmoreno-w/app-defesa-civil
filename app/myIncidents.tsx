@@ -1,12 +1,34 @@
 import { Feather } from '@expo/vector-icons';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Header from '../src/components/Header';
+import { useAuth } from '../src/contexts/login-and-notifications-context';
+import { apiClient } from '../src/services/axios';
+import { getDate } from '../src/services/getDate';
 import colors from '../src/styles/colors';
 import fonts from '../src/styles/fonts';
+import { Incident } from './incidentsAnalysis';
 
 export default function MyIncidents() {
-    const [myIncidents, setMyIncidents] = useState<Array<string>>(['Sim', 'Não', 'Aham', 'Claro']);
+    const { user } = useAuth();
+    const [myIncidentss, setMyIncidentss] = useState<Array<string>>(['Sim', 'Não', 'Aham', 'Claro']);
+    const [myIncidents, setMyIncidents] = useState<Array<Incident>>([]);
+
+    useEffect(() => {
+        async function loadIncidents() {
+            apiClient
+                .get('/incidents/my', { headers: { Authorization: `Bearer ${user.token}` } })
+                .then((receivedData) => {
+                    console.log(receivedData.data);
+                    setMyIncidents(receivedData.data);
+                    // setNews(receivedNews.data);
+                })
+                .catch((error) => console.log(error));
+        }
+
+        loadIncidents();
+    }, []);
+
     return (
         <View style={styles.container}>
             <Header showCloseIcon />
@@ -39,12 +61,19 @@ export default function MyIncidents() {
                                 }
                             >
                                 <Text style={styles.incidentDescription} ellipsizeMode='tail' numberOfLines={1}>
-                                    {incident}
+                                    {incident.description}
                                 </Text>
-                                <Text style={styles.incidentDate}>22/04/1993</Text>
+                                <Text style={styles.incidentDate}>{getDate(incident.created_at)}</Text>
                                 <View style={styles.incidentStatus}>
-                                    {/* <Feather name='check' size={16} color={colors.green} /> */}
-                                    <Feather name='clock' size={16} color={colors.yellow} />
+                                    {incident.status == 'PENDING' && (
+                                        <Feather name='clock' size={16} color={colors.yellow} />
+                                    )}
+                                    {incident.status == 'REGISTERED' && (
+                                        <Feather name='check' size={16} color={colors.green} />
+                                    )}
+                                    {incident.status == 'SOLVED' && (
+                                        <Feather name='check-square' size={16} color={colors.green} />
+                                    )}
                                 </View>
                             </View>
                         ))}
@@ -61,6 +90,10 @@ export default function MyIncidents() {
                     <View style={styles.iconDescriptionLine}>
                         <Feather name='check' size={16} color={colors.green} />
                         <Text>- Aviso verificado por um fiscal</Text>
+                    </View>
+                    <View style={styles.iconDescriptionLine}>
+                        <Feather name='check-square' size={16} color={colors.green} />
+                        <Text>- Incidente Resolvido</Text>
                     </View>
                 </View>
             </View>

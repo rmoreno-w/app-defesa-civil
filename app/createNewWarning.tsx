@@ -1,38 +1,62 @@
+import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import ActionFeedbackModal from '../src/components/ActionFeedbackModal';
 import Header from '../src/components/Header';
 import InputDark from '../src/components/InputDark';
 import Picker from '../src/components/PickerDark';
+import { useAuth } from '../src/contexts/login-and-notifications-context';
 import importedDistricts from '../src/districts.json';
 import incidentsCategories from '../src/incidentsCategories.json';
+import { apiClient } from '../src/services/axios';
 import colors from '../src/styles/colors';
 import fonts from '../src/styles/fonts';
 
 export default function CreateNewWarning() {
+    const { user } = useAuth();
+    const router = useRouter();
+
     const [description, setDescription] = useState('');
     const [isDescriptionFilled, setIsDescriptionFilled] = useState(false);
     const [category, setCategory] = useState('');
     const [district, setDistrict] = useState('');
+
+    const [isErrorOnCreatingIncidentModalOpen, setIsErrorOnCreatingIncidentModalOpen] = useState(false);
+    const [isCreatingIncidentSuccesfulModalOpen, setIsCreatingIncidentSuccesfulModalOpen] = useState(false);
 
     const neww = Object.values(importedDistricts);
     const { 0: districtsArray } = neww;
     const values = districtsArray.map((item) => ({ label: item, value: item }));
     const formattedDistricts = { values };
 
-    function getDate() {
-        const dateObject = new Date();
-        const local = dateObject.toLocaleDateString();
-
-        const day = dateObject.getDate();
-        const month = dateObject.getMonth() + 1;
-        const year = dateObject.getFullYear();
-        const hours = dateObject.getHours();
-        const minutes = dateObject.getMinutes();
-
-        const currentDate = `${day}/${month}/${year} ${hours}:${minutes}`;
-        return currentDate;
+    async function postIncident() {
+        category &&
+            description &&
+            district &&
+            apiClient
+                .post(
+                    '/incidents',
+                    {
+                        category,
+                        description,
+                        status: 'PENDING',
+                        district_names: [district],
+                        risk_scale: 0,
+                    },
+                    { headers: { Authorization: `Bearer ${user.token}` } }
+                )
+                .then((response) => {
+                    console.log(response.data);
+                    setCategory('');
+                    setDescription('');
+                    setDistrict('');
+                    setIsCreatingIncidentSuccesfulModalOpen(true);
+                })
+                .catch((error) => {
+                    console.log(error);
+                    setIsErrorOnCreatingIncidentModalOpen(true);
+                });
     }
-
     return (
         <View style={styles.container}>
             <Header showCloseIcon />
@@ -40,12 +64,10 @@ export default function CreateNewWarning() {
             <View style={styles.formContainer}>
                 <Text style={styles.subtitle}>Novo Aviso para a Defesa Civil:</Text>
 
-                <Text>{getDate()}</Text>
-
                 <Picker
                     chosenItem={district}
                     itemsToDisplay={formattedDistricts}
-                    label='Bairros'
+                    label='Bairro'
                     setChosenItem={setDistrict}
                 />
 
@@ -67,7 +89,21 @@ export default function CreateNewWarning() {
                     />
                 </View>
 
-                <TouchableOpacity activeOpacity={0.8} style={styles.button}>
+                <ActionFeedbackModal
+                    feedbackMessage='Ops :( Houve um erro ao tentar criar o aviso. Tente novamente em alguns instantes'
+                    isActionSuccessful={false}
+                    isModalOpen={isErrorOnCreatingIncidentModalOpen}
+                    setIsModalOpen={setIsErrorOnCreatingIncidentModalOpen}
+                />
+
+                <ActionFeedbackModal
+                    feedbackMessage='Aviso criado com sucesso!'
+                    isActionSuccessful={true}
+                    isModalOpen={isCreatingIncidentSuccesfulModalOpen}
+                    setIsModalOpen={setIsCreatingIncidentSuccesfulModalOpen}
+                    onDismissFunction={() => router.back()}
+                />
+                <TouchableOpacity activeOpacity={0.8} style={styles.button} onPress={postIncident}>
                     <Text style={styles.buttonText}>Enviar</Text>
                 </TouchableOpacity>
             </View>
