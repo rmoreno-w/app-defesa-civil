@@ -7,12 +7,13 @@ import colors from '../styles/colors';
 interface MultiPickerProps {
     label: string;
     itemsToDisplay: Array<string>;
+    chosenItems: Array<number>;
+    setChosenItems: React.Dispatch<React.SetStateAction<number[]>>;
 }
-export default function MultiPicker({ label, itemsToDisplay }: MultiPickerProps) {
+export default function MultiPicker({ label, itemsToDisplay, chosenItems, setChosenItems }: MultiPickerProps) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [displayItems, setDisplayItems] = useState<Array<string>>([...itemsToDisplay]);
     const [searchTerm, setSearchTerm] = useState('');
-    const [chosenItems, setChosenItems] = useState<Array<number>>([]);
 
     function toggleItemSelection(chosenItemIndex: number) {
         const indexOnSelectedArray = chosenItems.findIndex((currentItemIndex) => currentItemIndex == chosenItemIndex);

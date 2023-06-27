@@ -1,22 +1,60 @@
 import Checkbox from 'expo-checkbox';
+import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import ActionFeedbackModal from '../src/components/ActionFeedbackModal';
 import Header from '../src/components/Header';
 import InputDark from '../src/components/InputDark';
 import MultiPicker from '../src/components/MultiPicker';
 import Picker from '../src/components/Picker';
+import { useAuth } from '../src/contexts/login-and-notifications-context';
 import importedDistricts from '../src/districts.json';
 import incidentsCategories from '../src/incidentsCategories.json';
+import incidentsRiskScale from '../src/incidentsRiskScale.json';
+import { apiClient } from '../src/services/axios';
 import colors from '../src/styles/colors';
 import fonts from '../src/styles/fonts';
 
 export default function CreateIncident() {
     const [category, setCategory] = useState('');
     const [incidentDescription, setIncidentDescription] = useState('');
+    const [riskScale, setRiskScale] = useState('');
     const [isIncidentDescriptionFocused, setIsIncidentDescriptionFocused] = useState(false);
-    // const [districts, setDistricts] = useState<Array<string>>([]);
-    const [district, setDistrict] = useState('');
+    const [districts, setDistricts] = useState<number[]>([]);
     const [shouldSendNotification, setShouldSendNotification] = useState(false);
+    const [isErrorOnCreatingIncidentModalOpen, setIsErrorOnCreatingIncidentModalOpen] = useState(false);
+    const [isCreatingIncidentSuccesfulModalOpen, setIsCreatingIncidentSuccesfulModalOpen] = useState(false);
+
+    const { user } = useAuth();
+    const router = useRouter();
+
+    async function postIncident() {
+        category && incidentDescription && districts.length != 0 && riskScale != '';
+        apiClient
+            .post(
+                '/incidents',
+                {
+                    category,
+                    description: incidentDescription,
+                    status: 'REGISTERED',
+                    district_names: districts.map((item) => importedDistricts.values[item]),
+                    risk_scale: Number(riskScale),
+                },
+                { headers: { Authorization: `Bearer ${user.token}` } }
+            )
+            .then((response) => {
+                //console.log(response.data);
+                setCategory('');
+                setIncidentDescription('');
+                setRiskScale('');
+                setDistricts([]);
+                setIsCreatingIncidentSuccesfulModalOpen(true);
+            })
+            .catch((error) => {
+                console.log(error);
+                setIsErrorOnCreatingIncidentModalOpen(true);
+            });
+    }
 
     return (
         <View style={styles.container}>
@@ -26,7 +64,12 @@ export default function CreateIncident() {
                 <Text style={styles.subtitle}>Publicar incidente:</Text>
 
                 <ScrollView contentContainerStyle={{ gap: 24, paddingBottom: 140 }}>
-                    <MultiPicker itemsToDisplay={importedDistricts.values} label='Bairros' />
+                    <MultiPicker
+                        itemsToDisplay={importedDistricts.values}
+                        label='Bairros'
+                        chosenItems={districts}
+                        setChosenItems={setDistricts}
+                    />
 
                     <Picker
                         chosenItem={category}
@@ -46,6 +89,13 @@ export default function CreateIncident() {
                         />
                     </View>
 
+                    <Picker
+                        chosenItem={riskScale}
+                        itemsToDisplay={incidentsRiskScale}
+                        label='Escala de Risco'
+                        setChosenItem={setRiskScale}
+                    />
+
                     <View style={styles.checkboxContainer}>
                         <Checkbox
                             value={shouldSendNotification}
@@ -56,7 +106,22 @@ export default function CreateIncident() {
                             Enviar notificação deste incidente para os bairros selecionados?
                         </Text>
                     </View>
-                    <TouchableOpacity activeOpacity={0.8} style={styles.button}>
+
+                    <ActionFeedbackModal
+                        feedbackMessage='Ops :( Houve um erro ao tentar criar o incidente. Tente novamente em alguns instantes'
+                        isActionSuccessful={false}
+                        isModalOpen={isErrorOnCreatingIncidentModalOpen}
+                        setIsModalOpen={setIsErrorOnCreatingIncidentModalOpen}
+                    />
+
+                    <ActionFeedbackModal
+                        feedbackMessage='Incidente criado com sucesso!'
+                        isActionSuccessful={true}
+                        isModalOpen={isCreatingIncidentSuccesfulModalOpen}
+                        setIsModalOpen={setIsCreatingIncidentSuccesfulModalOpen}
+                        onDismissFunction={() => router.back()}
+                    />
+                    <TouchableOpacity activeOpacity={0.8} style={styles.button} onPress={postIncident}>
                         <Text style={styles.buttonText}>Criar Incidente</Text>
                     </TouchableOpacity>
                 </ScrollView>

@@ -59,7 +59,7 @@ export default function Picker({ label, itemsToDisplay, chosenItem, setChosenIte
                         </ScrollView>
                     </View>
                 </Modal>
-                <Text style={styles.inputText}>{localChosenItem ? localChosenItem.label : ''}</Text>
+                <Text style={styles.inputText}>{chosenItem ? localChosenItem.label : ''}</Text>
                 <Feather name='chevron-down' size={18} color={colors.blue_600} />
             </TouchableOpacity>
         </View>

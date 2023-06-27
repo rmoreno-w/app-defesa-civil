@@ -1,6 +1,7 @@
 {
     "values": [
-        { "label": "Chuva Intensa", "value": "FLOOD" },
+        { "label": "Chuva Intensa", "value": "SEVERE_STORM" },
+        { "label": "Inundação", "value": "FLOOD" },
         { "label": "Deslizamento de Terra", "value": "LANDSLIDE" },
         { "label": "Fogo / Incêndio", "value": "FIRE" },
         { "label": "Vento Intenso", "value": "INTENSE_WIND" },

@@ -1,24 +1,61 @@
 import { Feather } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Header from '../src/components/Header';
+import { useAuth } from '../src/contexts/login-and-notifications-context';
+import { apiClient } from '../src/services/axios';
+import { getDate } from '../src/services/getDate';
+import { getTime } from '../src/services/getTime';
 import colors from '../src/styles/colors';
 import fonts from '../src/styles/fonts';
 
+interface Incident {
+    category: string;
+    created_at: string;
+    description: string;
+    districts_name: Array<string>;
+    id: string;
+    risk_scale: number;
+    status: string;
+    updated_at: string;
+    user_id: string;
+}
+
 export default function IncidentsAnalysis() {
-    const [incidents, setIncidents] = useState<Array<string>>([
-        'Sim Sim Sim Sim Sim Sim Sim Sim Sim Sim Sim ',
-        'Não',
-        'Não',
-        'Não',
-        'Aham',
-        'Claro',
-        'Claro',
-        'Claro',
-        'Claro',
-        'Claro',
-    ]);
+    const { user } = useAuth();
+
+    // const [news, setNews] = useState<News[]>([]);
+    const [errorLoading, setErrorLoading] = useState('');
+
+    const [incidents, setIncidents] = useState<Array<Incident>>([]);
+    // const [incidents, setIncidents] = useState<Array<string>>([
+    //     'Sim Sim Sim Sim Sim Sim Sim Sim Sim Sim Sim ',
+    //     'Não',
+    //     'Não',
+    //     'Não',
+    //     'Aham',
+    //     'Claro',
+    //     'Claro',
+    //     'Claro',
+    //     'Claro',
+    //     'Claro',
+    // ]);
+
+    useEffect(() => {
+        async function loadNews() {
+            apiClient
+                .get('/incidents', { headers: { Authorization: `Bearer ${user.token}` } })
+                .then((receivedData) => {
+                    console.log(receivedData.data);
+                    setIncidents(receivedData.data);
+                    // setNews(receivedNews.data);
+                })
+                .catch((error) => console.log(error));
+        }
+
+        loadNews();
+    }, []);
 
     const router = useRouter();
 
@@ -91,7 +128,7 @@ export default function IncidentsAnalysis() {
 interface TableRowProps {
     index: number;
     incidentsLength: number;
-    incident: string;
+    incident: Incident;
 }
 
 function TableRow({ index, incidentsLength, incident }: TableRowProps) {
@@ -113,15 +150,17 @@ function TableRow({ index, incidentsLength, incident }: TableRowProps) {
             }
         >
             <Text style={styles.incidentDescription} ellipsizeMode='tail' numberOfLines={2}>
-                {incident}, {index}
+                {incident.description}
             </Text>
             <View style={styles.incidentDate}>
-                <Text>16:05</Text>
-                <Text style={{ fontSize: 10 }}>22/04/1993</Text>
+                <Text>{getTime(incident.created_at)}</Text>
+                <Text style={{ fontSize: 10 }}>{getDate(incident.created_at)}</Text>
             </View>
             <View style={styles.incidentStatus}>
-                {/* <Feather name='check' size={16} color={colors.green} /> */}
-                <Feather name='clock' size={16} color={colors.yellow} />
+                {incident.status == 'PENDING' && <Feather name='clock' size={16} color={colors.yellow} />}
+                {incident.status == 'REGISTERED' && <Feather name='check' size={16} color={colors.green} />}
+                {incident.status == 'REJECTED' && <Feather name='x' size={16} color={colors.red} />}
+                {incident.status == 'SOLVED' && <Feather name='check-square' size={16} color={colors.green} />}
             </View>
         </TouchableOpacity>
     );

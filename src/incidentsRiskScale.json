@@ -1,0 +1,8 @@
+{
+    "values": [
+        { "label": "Sem perigo", "value": "0" },
+        { "label": "Perigo potencial", "value": "1" },
+        { "label": "Perigo", "value": "2" },
+        { "label": "Grande perigo", "value": "3" }
+    ]
+}
