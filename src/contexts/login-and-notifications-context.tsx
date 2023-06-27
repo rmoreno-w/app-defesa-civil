@@ -115,7 +115,7 @@ export function Provider(props) {
                 // password: password,
             })
             .then((response) => {
-                // console.log(response.data);
+                console.log(response.data);
                 setAuth({
                     token: response.data.token,
                     district: response.data.district ? response.data.district : '',

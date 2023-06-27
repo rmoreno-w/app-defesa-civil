@@ -43,7 +43,7 @@ export default function IncidentsAnalysis() {
     // ]);
 
     useEffect(() => {
-        async function loadNews() {
+        async function loadIncidents() {
             apiClient
                 .get('/incidents', { headers: { Authorization: `Bearer ${user.token}` } })
                 .then((receivedData) => {
@@ -54,7 +54,7 @@ export default function IncidentsAnalysis() {
                 .catch((error) => console.log(error));
         }
 
-        loadNews();
+        loadIncidents();
     }, []);
 
     const router = useRouter();
