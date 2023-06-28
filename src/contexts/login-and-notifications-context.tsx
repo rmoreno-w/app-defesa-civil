@@ -48,15 +48,14 @@ function useProtectedRoute(user: userData) {
     }, [user, segments]);
 }
 
-async function listenForNotifications(setIsListening: React.Dispatch<React.SetStateAction<boolean>>, user: userData) {
+async function listenForNotifications(user: userData) {
     useEffect(() => {
         if (!user.token || user.role == 'AGENT') return;
 
-        const webSocket = new WebSocket(`ws:${baseNotificationsURL}/${user.district}/ws`);
+        const formattedDistrictName = user.district.replace(' ', '');
+        // console.log(`ws:${baseNotificationsURL}/${formattedDistrictName}/ws`);
 
-        webSocket.onopen = async () => {
-            setIsListening(true);
-        };
+        const webSocket = new WebSocket(`${baseNotificationsURL}/${formattedDistrictName}/ws`);
 
         webSocket.onmessage = async (content) => {
             let jsonRecebido = JSON.parse(content.data);
@@ -68,11 +67,11 @@ async function listenForNotifications(setIsListening: React.Dispatch<React.SetSt
             await Notifications.scheduleNotificationAsync({
                 content: {
                     body: jsonRecebido.message,
-                    title: `🚨 ${jsonRecebido.title} 🚨`,
+                    title: `🚨 ${jsonRecebido.title || 'Novo incidente na sua área!'} 🚨`,
                     priority: Notifications.AndroidNotificationPriority.HIGH,
                 },
                 trigger: {
-                    seconds: 1,
+                    seconds: 3,
                 },
             });
         };
@@ -104,43 +103,43 @@ export function Provider(props) {
         id: '',
     });
 
-    const [isListeningForNotifications, setIsListeningForNotifications] = useState(false);
-
     async function signIn({ email, password }: userLogin) {
-        await apiClient
-            .post('/login', {
-                //Agente
-                // login: 'agent@email.com',
-                // password: 'Agent!123456789',
-                //User
-                // login: 'user7@email.com',
-                // password: 'User!123456789',
-                login: email,
-                password: password,
-            })
-            .then((response) => {
-                // console.log(response.data);
-                setAuth({
-                    token: response.data.token,
-                    district: response.data.district,
-                    role: response.data.role,
-                    id: '',
+        try {
+            await apiClient
+                .post('/login', {
+                    //Agente
+                    // login: 'agent@email.com',
+                    // password: 'Agent!123456789',
+                    //User
+                    // login: 'user7@email.com',
+                    // password: 'User!123456789',
+                    login: email,
+                    password: password,
+                })
+                .then((response) => {
+                    console.log(response.data);
+                    let token = response.data.token;
+                    apiClient
+                        .get('/users/me', { headers: { Authorization: `Bearer ${response.data.token}` } })
+                        .then((secondResponse) =>
+                            setAuth({
+                                token,
+                                district: secondResponse.data.district_name,
+                                role: secondResponse.data.role,
+                                id: secondResponse.data.id,
+                            })
+                        );
                 });
-            })
-            .catch((error) => {
-                console.log(`Erro no login: ${error}`);
-                setAuth({
-                    token: '',
-                    district: '',
-                    role: '',
-                    id: '',
-                });
-            });
-
-        if (!user.token) {
-            return 'Ops :( erro no login, por favor confirme seus dados';
-        } else {
             return '';
+        } catch (error) {
+            console.log(`Erro no login: ${error}`);
+            setAuth({
+                token: '',
+                district: '',
+                role: '',
+                id: '',
+            });
+            return 'Ops :( erro no login, por favor confirme seus dados';
         }
     }
 
@@ -154,7 +153,7 @@ export function Provider(props) {
     }
 
     useProtectedRoute(user);
-    listenForNotifications(setIsListeningForNotifications, user);
+    listenForNotifications(user);
 
     return (
         <AuthContext.Provider

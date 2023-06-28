@@ -19,7 +19,7 @@ export default function MyIncidents() {
             apiClient
                 .get('/incidents/my', { headers: { Authorization: `Bearer ${user.token}` } })
                 .then((receivedData) => {
-                    console.log(receivedData.data);
+                    // console.log(receivedData.data);
                     setMyIncidents(receivedData.data);
                     // setNews(receivedNews.data);
                 })

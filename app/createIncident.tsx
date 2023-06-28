@@ -9,11 +9,19 @@ import MultiPicker from '../src/components/MultiPicker';
 import Picker from '../src/components/PickerDark';
 import { useAuth } from '../src/contexts/login-and-notifications-context';
 import importedDistricts from '../src/districts.json';
+import importedEmergencyServices from '../src/emergencyServices.json';
 import incidentsCategories from '../src/incidentsCategories.json';
 import incidentsRiskScale from '../src/incidentsRiskScale.json';
 import { apiClient } from '../src/services/axios';
 import colors from '../src/styles/colors';
 import fonts from '../src/styles/fonts';
+
+const serviceId = {
+    Policia: '2e807154-506d-4ff4-a0e8-e35d655627de',
+    SAMU: '11ca490a-92cf-4d32-81c5-60f9d440348c',
+    Bombeiros: 'f7a8ef71-5afa-4493-bf2a-8a636cd61c78',
+    Cemig: '1d4b30f8-cb1b-4a6a-af0b-c6705d6ffcdb',
+};
 
 export default function CreateIncident() {
     const [category, setCategory] = useState('');
@@ -22,6 +30,7 @@ export default function CreateIncident() {
     const [isIncidentDescriptionFocused, setIsIncidentDescriptionFocused] = useState(false);
     const [districts, setDistricts] = useState<number[]>([]);
     const [shouldSendNotification, setShouldSendNotification] = useState(false);
+    const [emergencyServices, setEmergencyServices] = useState<Array<number>>([]);
     const [isErrorOnCreatingIncidentModalOpen, setIsErrorOnCreatingIncidentModalOpen] = useState(false);
     const [isCreatingIncidentSuccesfulModalOpen, setIsCreatingIncidentSuccesfulModalOpen] = useState(false);
 
@@ -30,30 +39,44 @@ export default function CreateIncident() {
 
     async function postIncident() {
         category && incidentDescription && districts.length != 0 && riskScale != '';
-        apiClient
-            .post(
-                '/incidents',
-                {
-                    category,
-                    description: incidentDescription,
-                    status: 'REGISTERED',
-                    district_names: districts.map((item) => importedDistricts.values[item]),
-                    risk_scale: Number(riskScale),
-                },
-                { headers: { Authorization: `Bearer ${user.token}` } }
-            )
-            .then((response) => {
-                //console.log(response.data);
-                setCategory('');
-                setIncidentDescription('');
-                setRiskScale('');
-                setDistricts([]);
-                setIsCreatingIncidentSuccesfulModalOpen(true);
-            })
-            .catch((error) => {
-                console.log(error);
-                setIsErrorOnCreatingIncidentModalOpen(true);
-            });
+        try {
+            apiClient
+                .post(
+                    '/incidents',
+                    {
+                        category,
+                        description: incidentDescription,
+                        status: 'REGISTERED',
+                        district_names: districts.map((item) => importedDistricts.values[item]),
+                        risk_scale: Number(riskScale),
+                    },
+                    { headers: { Authorization: `Bearer ${user.token}` } }
+                )
+                .then(async (response) => {
+                    if (shouldSendNotification) {
+                        console.log(response.data);
+                        await apiClient.post(
+                            'incidents-notification',
+                            {
+                                'emergency-service-id': '11ca490a-92cf-4d32-81c5-60f9d440348c',
+                                incident_id: response.data.id,
+                            },
+                            { headers: { Authorization: `Bearer ${user.token}` } }
+                        );
+                    }
+                    setCategory('');
+                    setIncidentDescription('');
+                    setRiskScale('');
+                    setDistricts([]);
+                    setIsCreatingIncidentSuccesfulModalOpen(true);
+                    setShouldSendNotification(false);
+                });
+        } catch (error) {
+            console.log(error.response.data);
+            console.log(error.response.status);
+            console.log(error.response.error);
+            setIsErrorOnCreatingIncidentModalOpen(true);
+        }
     }
 
     return (
@@ -96,17 +119,26 @@ export default function CreateIncident() {
                         setChosenItem={setRiskScale}
                     />
 
-                    <View style={styles.checkboxContainer}>
-                        <Checkbox
-                            value={shouldSendNotification}
-                            onValueChange={setShouldSendNotification}
-                            color={colors.blue_600}
-                        />
+                    <TouchableOpacity
+                        style={styles.checkboxContainer}
+                        onPress={() => setShouldSendNotification(!shouldSendNotification)}
+                        activeOpacity={0.9}
+                    >
+                        <Checkbox value={shouldSendNotification} color={colors.blue_600} />
                         <Text style={styles.checkboxText}>
                             Enviar notificação deste incidente para os bairros selecionados?
                         </Text>
-                    </View>
+                    </TouchableOpacity>
 
+                    {shouldSendNotification && (
+                        <MultiPicker
+                            chosenItems={emergencyServices}
+                            itemsToDisplay={importedEmergencyServices.values}
+                            label='Serviços de Emergência a Notificar'
+                            setChosenItems={setEmergencyServices}
+                            //emergencyServices.map((service) => serviceId[importedEmergencyServices.values[service]]).join(', ')
+                        />
+                    )}
                     <ActionFeedbackModal
                         feedbackMessage='Ops :( Houve um erro ao tentar criar o incidente. Tente novamente em alguns instantes'
                         isActionSuccessful={false}
