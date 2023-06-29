@@ -1,1 +1,8 @@
-{ "values": ["Policia", "SAMU", "Bombeiros", "Cemig"] }
+{
+    "values": [
+        { "label": "Policia", "value": "Police" },
+        { "label": "SAMU", "value": "SAMU" },
+        { "label": "Bombeiros", "value": "Firefighters" },
+        { "label": "Cemig", "value": "Cemig" }
+    ]
+}

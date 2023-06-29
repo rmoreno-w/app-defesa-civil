@@ -16,12 +16,12 @@ import { apiClient } from '../src/services/axios';
 import colors from '../src/styles/colors';
 import fonts from '../src/styles/fonts';
 
-const serviceId = {
-    Policia: '2e807154-506d-4ff4-a0e8-e35d655627de',
-    SAMU: '11ca490a-92cf-4d32-81c5-60f9d440348c',
-    Bombeiros: 'f7a8ef71-5afa-4493-bf2a-8a636cd61c78',
-    Cemig: '1d4b30f8-cb1b-4a6a-af0b-c6705d6ffcdb',
-};
+// const serviceId = {
+//     Policia: '2e807154-506d-4ff4-a0e8-e35d655627de',
+//     SAMU: '11ca490a-92cf-4d32-81c5-60f9d440348c',
+//     Bombeiros: 'f7a8ef71-5afa-4493-bf2a-8a636cd61c78',
+//     Cemig: '1d4b30f8-cb1b-4a6a-af0b-c6705d6ffcdb',
+// };
 
 export default function CreateIncident() {
     const [category, setCategory] = useState('');
@@ -30,7 +30,8 @@ export default function CreateIncident() {
     const [isIncidentDescriptionFocused, setIsIncidentDescriptionFocused] = useState(false);
     const [districts, setDistricts] = useState<number[]>([]);
     const [shouldSendNotification, setShouldSendNotification] = useState(false);
-    const [emergencyServices, setEmergencyServices] = useState<Array<number>>([]);
+    // const [emergencyServices, setEmergencyServices] = useState<Array<number>>([]);
+    const [emergencyService, setEmergencyService] = useState('');
     const [isErrorOnCreatingIncidentModalOpen, setIsErrorOnCreatingIncidentModalOpen] = useState(false);
     const [isCreatingIncidentSuccesfulModalOpen, setIsCreatingIncidentSuccesfulModalOpen] = useState(false);
 
@@ -58,7 +59,7 @@ export default function CreateIncident() {
                         await apiClient.post(
                             'incidents-notification',
                             {
-                                'emergency-service-id': '11ca490a-92cf-4d32-81c5-60f9d440348c',
+                                emergency_service_name: emergencyService,
                                 incident_id: response.data.id,
                             },
                             { headers: { Authorization: `Bearer ${user.token}` } }
@@ -131,13 +132,19 @@ export default function CreateIncident() {
                     </TouchableOpacity>
 
                     {shouldSendNotification && (
-                        <MultiPicker
-                            chosenItems={emergencyServices}
-                            itemsToDisplay={importedEmergencyServices.values}
+                        <Picker
+                            chosenItem={emergencyService}
+                            itemsToDisplay={importedEmergencyServices}
                             label='Serviços de Emergência a Notificar'
-                            setChosenItems={setEmergencyServices}
-                            //emergencyServices.map((service) => serviceId[importedEmergencyServices.values[service]]).join(', ')
+                            setChosenItem={setEmergencyService}
                         />
+                        // <MultiPicker
+                        //     chosenItems={emergencyServices}
+                        //     itemsToDisplay={importedEmergencyServices.values}
+                        //     label='Serviços de Emergência a Notificar'
+                        //     setChosenItems={setEmergencyServices}
+                        //     //emergencyServices.map((service) => serviceId[importedEmergencyServices.values[service]]).join(', ')
+                        // />
                     )}
                     <ActionFeedbackModal
                         feedbackMessage='Ops :( Houve um erro ao tentar criar o incidente. Tente novamente em alguns instantes'
