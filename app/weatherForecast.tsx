@@ -65,6 +65,7 @@ export default function WeatherForecast() {
         wind_velocity: 0,
     });
     const [risk, setRisk] = useState('');
+    let minutes = chosenDayData && new Date(chosenDayData.created_at).getMinutes().toString();
 
     useEffect(() => {
         async function loadWeatherData() {
@@ -97,6 +98,14 @@ export default function WeatherForecast() {
         <View style={styles.container}>
             <Header showCloseIcon />
 
+            {!chosenDayData && (
+                <View style={styles.noIncidentsContainer}>
+                    <Feather name='download-cloud' size={24} color={colors.blue_600} />
+                    <View style={{ flexShrink: 1 }}>
+                        <Text>Buscando dados de previsão do tempo...</Text>
+                    </View>
+                </View>
+            )}
             {chosenDayData && (
                 <View style={styles.weatherContainer}>
                     <View style={styles.header}>
@@ -106,7 +115,7 @@ export default function WeatherForecast() {
                             <Text style={styles.subtitleBlack}>, obtida às </Text>
                             <Text style={styles.subtitleBlue}>
                                 {new Date(chosenDayData.created_at).getHours()}:
-                                {new Date(chosenDayData.created_at).getMinutes()}
+                                {minutes.length == 2 ? minutes : `0${minutes}`}
                             </Text>
                         </View>
                     </View>
@@ -239,6 +248,11 @@ export default function WeatherForecast() {
 }
 
 const styles = StyleSheet.create({
+    noIncidentsContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 8,
+    },
     daySelectorWrapper: {
         flexDirection: 'row',
         alignContent: 'center',
