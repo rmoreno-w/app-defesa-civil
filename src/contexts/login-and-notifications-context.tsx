@@ -14,6 +14,7 @@ interface userLogin {
 interface userData {
     token: string;
     district: string;
+    name: string;
     role: string;
     id: string;
 }
@@ -44,6 +45,9 @@ function useProtectedRoute(user: userData) {
         } else if (user.role == 'USER' && inAuthGroup) {
             // Redirect away from the sign-in page.
             router.replace('/userMainMenu');
+        } else if (user.role == 'EMERGENCY' && inAuthGroup) {
+            // Redirect away from the sign-in page.
+            router.replace('/emergencyServiceMainMenu');
         }
     }, [user, segments]);
 }
@@ -52,10 +56,16 @@ async function listenForNotifications(user: userData) {
     useEffect(() => {
         if (!user.token || user.role == 'AGENT') return;
 
-        const formattedDistrictName = user.district.replace(' ', '');
-        // console.log(`ws:${baseNotificationsURL}/${formattedDistrictName}/ws`);
+        let webSocket: any;
 
-        const webSocket = new WebSocket(`${baseNotificationsURL}/${formattedDistrictName}/ws`);
+        if (user.role == 'USER') {
+            let formattedDistrictName = user.district.replace(' ', '');
+            webSocket = new WebSocket(`${baseNotificationsURL}/${formattedDistrictName}/ws`);
+        } else if (user.role == 'EMERGENCY') {
+            let formattedServiceName = user.name.replace(' ', '');
+            webSocket = new WebSocket(`${baseNotificationsURL}/${formattedServiceName}/ws`);
+        }
+        // console.log(`ws:${baseNotificationsURL}/${formattedDistrictName}/ws`);
 
         webSocket.onmessage = async (content) => {
             let jsonRecebido = JSON.parse(content.data);
@@ -98,6 +108,7 @@ async function listenForNotifications(user: userData) {
 export function Provider(props) {
     const [user, setAuth] = useState<userData>({
         token: '',
+        name: '',
         district: '',
         role: '',
         id: '',
@@ -113,6 +124,9 @@ export function Provider(props) {
                     //User
                     // login: 'user7@email.com',
                     // password: 'User!123456789',
+                    //Servico
+                    // login: 'cemig@email.com',
+                    // password: 'Agent!123456789',
                     login: email,
                     password: password,
                 })
@@ -121,14 +135,16 @@ export function Provider(props) {
                     let token = response.data.token;
                     apiClient
                         .get('/users/me', { headers: { Authorization: `Bearer ${response.data.token}` } })
-                        .then((secondResponse) =>
+                        .then((secondResponse) => {
+                            console.log(secondResponse.data);
                             setAuth({
                                 token,
                                 district: secondResponse.data.district_name,
+                                name: secondResponse.data.name,
                                 role: secondResponse.data.role,
                                 id: secondResponse.data.id,
-                            })
-                        );
+                            });
+                        });
                 });
             return '';
         } catch (error) {
@@ -136,6 +152,7 @@ export function Provider(props) {
             setAuth({
                 token: '',
                 district: '',
+                name: '',
                 role: '',
                 id: '',
             });
@@ -148,6 +165,7 @@ export function Provider(props) {
             token: '',
             district: '',
             role: '',
+            name: '',
             id: '',
         });
     }
