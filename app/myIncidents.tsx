@@ -1,6 +1,7 @@
 import { Feather } from '@expo/vector-icons';
 import { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import { FlatList } from 'react-native-gesture-handler';
 import Header from '../src/components/Header';
 import { useAuth } from '../src/contexts/login-and-notifications-context';
 import { apiClient } from '../src/services/axios';
@@ -51,32 +52,25 @@ export default function MyIncidents() {
                             <Text style={styles.headerDate}>Data</Text>
                             <Text style={styles.headerStatus}>Status</Text>
                         </View>
-                        {myIncidents.map((incident, index) => (
-                            <View
-                                key={index}
-                                style={
-                                    index == myIncidents.length - 1
-                                        ? [styles.incidentLineContainer, { borderBottomColor: colors.blue_600 }]
-                                        : styles.incidentLineContainer
-                                }
-                            >
-                                <Text style={styles.incidentDescription} ellipsizeMode='tail' numberOfLines={1}>
-                                    {incident.description}
-                                </Text>
-                                <Text style={styles.incidentDate}>{getDate(incident.created_at)}</Text>
-                                <View style={styles.incidentStatus}>
-                                    {incident.status == 'PENDING' && (
-                                        <Feather name='clock' size={16} color={colors.yellow} />
-                                    )}
-                                    {incident.status == 'REGISTERED' && (
-                                        <Feather name='check' size={16} color={colors.green} />
-                                    )}
-                                    {incident.status == 'SOLVED' && (
-                                        <Feather name='check-square' size={16} color={colors.green} />
-                                    )}
-                                </View>
-                            </View>
-                        ))}
+                        <FlatList
+                            data={myIncidents}
+                            ItemSeparatorComponent={Separator}
+                            ListFooterComponentStyle={{
+                                borderBottomWidth: 2,
+                                borderBottomColor: colors.blue_600,
+                                height: 1,
+                                width: '100%',
+                            }}
+                            ListFooterComponent={Separator({ isBottom: true })}
+                            keyExtractor={(item) => item.id}
+                            renderItem={({ item }) => (
+                                <IncidenSentByUserDetails
+                                    created_at={item.created_at}
+                                    description={item.description}
+                                    status={item.status}
+                                />
+                            )}
+                        ></FlatList>
                     </View>
                 )}
 
@@ -101,6 +95,43 @@ export default function MyIncidents() {
     );
 }
 
+interface SeparatorProps {
+    isBottom?: boolean;
+}
+function Separator({ isBottom }: SeparatorProps) {
+    return (
+        <View
+            style={{
+                width: '100%',
+                borderBottomColor: isBottom ? colors.blue_600 : colors.blue_300,
+                borderBottomWidth: 2,
+            }}
+        />
+    );
+}
+
+interface IncidenSentByUserDetailsProps {
+    description: string;
+    created_at: string;
+    status: string;
+}
+
+function IncidenSentByUserDetails({ created_at, description, status }: IncidenSentByUserDetailsProps) {
+    return (
+        <View style={styles.incidentLineContainer}>
+            <Text style={styles.incidentDescription} ellipsizeMode='tail' numberOfLines={1}>
+                {description}
+            </Text>
+            <Text style={styles.incidentDate}>{getDate(created_at)}</Text>
+            <View style={styles.incidentStatus}>
+                {status == 'PENDING' && <Feather name='clock' size={16} color={colors.yellow} />}
+                {status == 'REGISTERED' && <Feather name='check' size={16} color={colors.green} />}
+                {status == 'SOLVED' && <Feather name='check-square' size={16} color={colors.green} />}
+            </View>
+        </View>
+    );
+}
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -118,6 +149,7 @@ const styles = StyleSheet.create({
     menuContainer: {
         // backgroundColor: 'lightblue',
         gap: 24,
+        flex: 1,
     },
     noIncidentsContainer: {
         // backgroundColor: 'green',
@@ -158,8 +190,8 @@ const styles = StyleSheet.create({
     },
     incidentLineContainer: {
         flexDirection: 'row',
-        borderBottomWidth: 2,
-        borderBottomColor: colors.blue_300,
+        // borderBottomWidth: 2,
+        // borderBottomColor: colors.blue_300,
         padding: 8,
     },
     incidentDescription: {
