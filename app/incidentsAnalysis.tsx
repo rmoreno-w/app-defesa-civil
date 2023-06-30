@@ -48,7 +48,7 @@ export default function IncidentsAnalysis() {
                 .get('/incidents', { headers: { Authorization: `Bearer ${user.token}` } })
                 .then((receivedData) => {
                     // console.log(receivedData.data);
-                    setIncidents(receivedData.data);
+                    setIncidents(receivedData.data.reverse());
                     // setNews(receivedNews.data);
                 })
                 .catch((error) => console.log(error));
@@ -135,7 +135,7 @@ function TableRow({ index, incidentsLength, incident }: TableRowProps) {
     const router = useRouter();
 
     function navigateToIncident() {
-        router.push('/createIncident');
+        router.push(`/createIncident?id=${incident.id}`);
     }
 
     return (

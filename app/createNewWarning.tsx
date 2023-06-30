@@ -12,14 +12,24 @@ import { apiClient } from '../src/services/axios';
 import colors from '../src/styles/colors';
 import fonts from '../src/styles/fonts';
 
+type Category = {
+    label: string;
+    value: string;
+};
+
+type District = {
+    label: string;
+    value: string;
+};
+
 export default function CreateNewWarning() {
     const { user } = useAuth();
     const router = useRouter();
 
     const [description, setDescription] = useState('');
     const [isDescriptionFilled, setIsDescriptionFilled] = useState(false);
-    const [category, setCategory] = useState('');
-    const [district, setDistrict] = useState('');
+    const [category, setCategory] = useState<Category>({ label: '', value: '' });
+    const [district, setDistrict] = useState<District>({ label: '', value: '' });
 
     const [isErrorOnCreatingIncidentModalOpen, setIsErrorOnCreatingIncidentModalOpen] = useState(false);
     const [isCreatingIncidentSuccesfulModalOpen, setIsCreatingIncidentSuccesfulModalOpen] = useState(false);
@@ -30,26 +40,34 @@ export default function CreateNewWarning() {
     const formattedDistricts = { values };
 
     async function postIncident() {
+        // console.log({
+        //     category: category.value,
+        //     description,
+        //     status: 'PENDING',
+        //     district_names: [district],
+        //     risk_scale: 0,
+        // });
         category &&
             description &&
             district &&
+            category.value &&
             apiClient
                 .post(
                     '/incidents',
                     {
-                        category,
+                        category: category.value,
                         description,
                         status: 'PENDING',
-                        district_names: [district],
+                        district_names: [district.value],
                         risk_scale: 0,
                     },
                     { headers: { Authorization: `Bearer ${user.token}` } }
                 )
                 .then((response) => {
-                    console.log(response.data);
-                    setCategory('');
+                    // console.log(response.data);
+                    setCategory({ label: '', value: '' });
                     setDescription('');
-                    setDistrict('');
+                    setDistrict({ label: '', value: '' });
                     setIsCreatingIncidentSuccesfulModalOpen(true);
                 })
                 .catch((error) => {

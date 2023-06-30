@@ -11,10 +11,15 @@ import { apiClient } from '../src/services/axios';
 import colors from '../src/styles/colors';
 import fonts from '../src/styles/fonts';
 
+interface CategoryType {
+    label: string;
+    value: string;
+}
+
 export default function CreateNews() {
     const router = useRouter();
 
-    const [category, setCategory] = useState('');
+    const [category, setCategory] = useState<CategoryType>({ label: '', value: '' });
     const [newsTitle, setNewsTitle] = useState('');
     const [isNewsTitleFocused, setIsNewsTitleFocused] = useState(false);
     const [newsDescription, setNewsDescription] = useState('');
@@ -25,27 +30,35 @@ export default function CreateNews() {
     const { user } = useAuth();
 
     async function postNews() {
-        apiClient
-            .post(
-                '/notices',
-                {
-                    category,
-                    title: newsTitle,
-                    description: newsDescription,
-                },
-                { headers: { Authorization: `Bearer ${user.token}` } }
-            )
-            .then((response) => {
-                //console.log(response.data);
-                setIsCreatingNewsSuccesfulModalOpen(true);
-                setCategory('');
-                setNewsDescription('');
-                setNewsTitle('');
-            })
-            .catch((error) => {
-                console.log(error);
-                setIsErrorOnCreatingNewsModalOpen(true);
-            });
+        // console.log({
+        //     category: category.value,
+        //     title: newsTitle,
+        //     description: newsDescription,
+        // });
+        category.label &&
+            newsTitle &&
+            newsDescription &&
+            apiClient
+                .post(
+                    '/notices',
+                    {
+                        category: category.value,
+                        title: newsTitle,
+                        description: newsDescription,
+                    },
+                    { headers: { Authorization: `Bearer ${user.token}` } }
+                )
+                .then((response) => {
+                    //console.log(response.data);
+                    setIsCreatingNewsSuccesfulModalOpen(true);
+                    setCategory({ label: '', value: '' });
+                    setNewsDescription('');
+                    setNewsTitle('');
+                })
+                .catch((error) => {
+                    console.log(error);
+                    setIsErrorOnCreatingNewsModalOpen(true);
+                });
     }
 
     return (

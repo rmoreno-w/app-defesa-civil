@@ -1,34 +1,36 @@
 import { Feather } from '@expo/vector-icons';
-import { useState } from 'react';
-import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
+import { useEffect, useState } from 'react';
+import { Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import colors from '../styles/colors';
 
-type DisplayItem = {
+type OptionItem = {
     label: string;
-    value: string;
+    value: string | number;
 };
 
-type DisplayItemsType = {
-    values: DisplayItem[];
+type SelectItems = {
+    values: OptionItem[];
 };
 
 interface PickerProps {
     label: string;
-    itemsToDisplay: DisplayItemsType;
-    chosenItem: string;
-    setChosenItem: React.Dispatch<React.SetStateAction<string>>;
+    itemsToDisplay: SelectItems;
+    chosenItem: OptionItem;
+    setChosenItem: React.Dispatch<React.SetStateAction<OptionItem>>;
 }
 
 export default function Picker({ label, itemsToDisplay, chosenItem, setChosenItem }: PickerProps) {
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [localChosenItem, setLocalChosenItem] = useState<DisplayItem>();
 
-    function chooseItem(chosenItem: DisplayItem) {
-        setLocalChosenItem(chosenItem);
-        setChosenItem(chosenItem.value);
+    function chooseItem(chosenItem: OptionItem) {
+        setChosenItem(chosenItem);
         setIsModalOpen(false);
     }
+
+    useEffect(() => {
+        // console.log(chosenItem);
+        // console.log(itemsToDisplay);
+    }, []);
 
     return (
         <View style={styles.inputWrapper}>
@@ -45,13 +47,13 @@ export default function Picker({ label, itemsToDisplay, chosenItem, setChosenIte
                         <ScrollView style={styles.modalWrapper}>
                             {itemsToDisplay.values.map((item, index) => (
                                 <TouchableOpacity
-                                    key={`${item.value + index}`}
+                                    key={`${item.value}_${index}}`}
                                     style={styles.modalLine}
                                     activeOpacity={0.5}
                                     onPress={() => chooseItem(item)}
                                 >
                                     <Text>{item.label}</Text>
-                                    {item.value == chosenItem && (
+                                    {item.value == chosenItem.value && (
                                         <Feather name='check' size={18} color={colors.green} />
                                     )}
                                 </TouchableOpacity>
@@ -59,7 +61,7 @@ export default function Picker({ label, itemsToDisplay, chosenItem, setChosenIte
                         </ScrollView>
                     </View>
                 </Modal>
-                <Text style={styles.inputText}>{chosenItem ? localChosenItem.label : ''}</Text>
+                <Text style={styles.inputText}>{chosenItem.label ? chosenItem.label : ''}</Text>
                 <Feather name='chevron-down' size={18} color={colors.blue_600} />
             </TouchableOpacity>
         </View>

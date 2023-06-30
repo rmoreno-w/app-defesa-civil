@@ -1,6 +1,6 @@
 import Checkbox from 'expo-checkbox';
-import { useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useRouter, useSearchParams } from 'expo-router';
+import { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import ActionFeedbackModal from '../src/components/ActionFeedbackModal';
 import Header from '../src/components/Header';
@@ -22,34 +22,74 @@ import fonts from '../src/styles/fonts';
 //     Bombeiros: 'f7a8ef71-5afa-4493-bf2a-8a636cd61c78',
 //     Cemig: '1d4b30f8-cb1b-4a6a-af0b-c6705d6ffcdb',
 // };
+type Category = {
+    label: string;
+    value: string;
+};
+
+type Risk = {
+    label: string;
+    value: number;
+};
+
+type EmergencyService = {
+    label: string;
+    value: string;
+};
 
 export default function CreateIncident() {
-    const [category, setCategory] = useState('');
+    const { id } = useSearchParams();
+
+    const [category, setCategory] = useState<Category>({ label: '', value: '' });
     const [incidentDescription, setIncidentDescription] = useState('');
-    const [riskScale, setRiskScale] = useState('');
+    const [riskScale, setRiskScale] = useState<Risk>({ label: '', value: undefined });
     const [isIncidentDescriptionFocused, setIsIncidentDescriptionFocused] = useState(false);
     const [districts, setDistricts] = useState<number[]>([]);
     const [shouldSendNotification, setShouldSendNotification] = useState(false);
     // const [emergencyServices, setEmergencyServices] = useState<Array<number>>([]);
-    const [emergencyService, setEmergencyService] = useState('');
+    const [emergencyService, setEmergencyService] = useState<EmergencyService>({ label: '', value: '' });
     const [isErrorOnCreatingIncidentModalOpen, setIsErrorOnCreatingIncidentModalOpen] = useState(false);
     const [isCreatingIncidentSuccesfulModalOpen, setIsCreatingIncidentSuccesfulModalOpen] = useState(false);
 
     const { user } = useAuth();
     const router = useRouter();
 
-    async function postIncident() {
-        category && incidentDescription && districts.length != 0 && riskScale != '';
+    useEffect(() => {
+        async function getEditData() {
+            id &&
+                apiClient
+                    .get(`/incidents/${id}`, { headers: { Authorization: `Bearer ${user.token}` } })
+                    .then((receivedData) => {
+                        let foundCategory = incidentsCategories.values.find(
+                            (category) => category.value == receivedData.data.category
+                        );
+                        setCategory(foundCategory);
+
+                        let foundRiskScale = incidentsRiskScale.values.find(
+                            (risk) => risk.value == receivedData.data.risk_scale
+                        );
+                        setRiskScale(foundRiskScale);
+                        setIncidentDescription(receivedData.data.description);
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+        }
+        getEditData();
+    }, []);
+
+    async function editIncident() {
+        id && category && incidentDescription && districts.length != 0 && riskScale.value != undefined;
         try {
             apiClient
-                .post(
-                    '/incidents',
+                .patch(
+                    `/incidents/${id}`,
                     {
-                        category,
+                        category: category.value,
                         description: incidentDescription,
                         status: 'REGISTERED',
                         district_names: districts.map((item) => importedDistricts.values[item]),
-                        risk_scale: Number(riskScale),
+                        risk_scale: Number(riskScale.value),
                     },
                     { headers: { Authorization: `Bearer ${user.token}` } }
                 )
@@ -59,15 +99,57 @@ export default function CreateIncident() {
                         await apiClient.post(
                             'incidents-notification',
                             {
-                                emergency_service_name: emergencyService,
+                                emergency_service_name: emergencyService.value,
                                 incident_id: response.data.id,
                             },
                             { headers: { Authorization: `Bearer ${user.token}` } }
                         );
                     }
-                    setCategory('');
+                    setCategory({ label: '', value: '' });
                     setIncidentDescription('');
-                    setRiskScale('');
+                    setRiskScale({ label: '', value: undefined });
+                    setDistricts([]);
+                    setIsCreatingIncidentSuccesfulModalOpen(true);
+                    setShouldSendNotification(false);
+                });
+        } catch (error) {
+            console.log(error.response.data);
+            console.log(error.response.status);
+            console.log(error.response.error);
+            setIsErrorOnCreatingIncidentModalOpen(true);
+        }
+    }
+
+    async function postIncident() {
+        category && incidentDescription && districts.length != 0 && riskScale.value != undefined;
+        try {
+            apiClient
+                .post(
+                    '/incidents',
+                    {
+                        category: category.value,
+                        description: incidentDescription,
+                        status: 'REGISTERED',
+                        district_names: districts.map((item) => importedDistricts.values[item]),
+                        risk_scale: Number(riskScale.value),
+                    },
+                    { headers: { Authorization: `Bearer ${user.token}` } }
+                )
+                .then(async (response) => {
+                    if (shouldSendNotification) {
+                        console.log(response.data);
+                        await apiClient.post(
+                            'incidents-notification',
+                            {
+                                emergency_service_name: emergencyService.value,
+                                incident_id: response.data.id,
+                            },
+                            { headers: { Authorization: `Bearer ${user.token}` } }
+                        );
+                    }
+                    setCategory({ label: '', value: '' });
+                    setIncidentDescription('');
+                    setRiskScale({ label: '', value: undefined });
                     setDistricts([]);
                     setIsCreatingIncidentSuccesfulModalOpen(true);
                     setShouldSendNotification(false);
@@ -160,8 +242,12 @@ export default function CreateIncident() {
                         setIsModalOpen={setIsCreatingIncidentSuccesfulModalOpen}
                         onDismissFunction={() => router.back()}
                     />
-                    <TouchableOpacity activeOpacity={0.8} style={styles.button} onPress={postIncident}>
-                        <Text style={styles.buttonText}>Criar Incidente</Text>
+                    <TouchableOpacity
+                        activeOpacity={0.8}
+                        style={styles.button}
+                        onPress={id ? editIncident : postIncident}
+                    >
+                        <Text style={styles.buttonText}>{id ? 'Editar Incidente' : 'Criar Incidente'}</Text>
                     </TouchableOpacity>
                 </ScrollView>
             </View>
