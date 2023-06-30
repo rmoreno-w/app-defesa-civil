@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { FlatList, StyleSheet, Text, View } from 'react-native';
 import Header from '../src/components/Header';
 import Incident from '../src/components/Incident';
+import IncidentDetailsModal from '../src/components/IncidentDetails';
 import { useAuth } from '../src/contexts/login-and-notifications-context';
 import { apiClient } from '../src/services/axios';
 import colors from '../src/styles/colors';
@@ -11,6 +12,8 @@ import { Incident as IncidentType } from './incidentsAnalysis';
 export default function VerifyIncidents() {
     const { user } = useAuth();
     const [incidents, setIncidents] = useState<Array<IncidentType>>([]);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [currentIncident, setCurrentIncident] = useState<IncidentType>();
 
     useEffect(() => {
         async function loadIncidents() {
@@ -21,7 +24,7 @@ export default function VerifyIncidents() {
                 })
                 .then((receivedData) => {
                     // console.log(receivedData.data);
-                    setIncidents(receivedData.data);
+                    setIncidents(receivedData.data.reverse());
                     // setNews(receivedNews.data);
                 })
                 .catch((error) => console.log(error));
@@ -29,6 +32,11 @@ export default function VerifyIncidents() {
 
         loadIncidents();
     }, []);
+
+    function setModalOpen(currentItem: IncidentType) {
+        setIsModalOpen(true);
+        setCurrentIncident(currentItem);
+    }
 
     return (
         <View style={styles.container}>
@@ -40,10 +48,32 @@ export default function VerifyIncidents() {
                     <Text style={styles.clickTip}>(clique no incidente para mais detalhes)</Text>
                 </View>
 
-                <Incident icon='water-damage' />
-                <Incident icon='wind' />
-                <Incident icon='terrain' />
-                <Incident icon='cloud-rain' />
+                <View
+                    style={{
+                        flex: 1,
+                    }}
+                >
+                    <FlatList
+                        data={incidents}
+                        renderItem={({ item }) => (
+                            <Incident
+                                category={item.category}
+                                description={item.description}
+                                createdAt={item.created_at}
+                                onPressFunction={() => setModalOpen(item)}
+                            />
+                        )}
+                        contentContainerStyle={{ flexGrow: 1 }}
+                    ></FlatList>
+                </View>
+
+                {currentIncident && (
+                    <IncidentDetailsModal
+                        isModalOpen={isModalOpen}
+                        setIsModalOpen={setIsModalOpen}
+                        incident={currentIncident}
+                    />
+                )}
             </View>
         </View>
     );
@@ -58,6 +88,7 @@ const styles = StyleSheet.create({
     },
     incidentsContainer: {
         gap: 24,
+        flex: 1,
     },
     subtitle: {
         fontFamily: fonts.textBold,

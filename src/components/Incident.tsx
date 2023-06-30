@@ -1,36 +1,67 @@
-import { Feather, MaterialIcons } from '@expo/vector-icons';
+import { Feather, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import colors from '../styles/colors';
 import fonts from '../styles/fonts';
 
 interface IncidentProps {
-    icon: 'wind' | 'water-damage' | 'terrain' | 'cloud-rain';
+    // category: 'SEVERE_STORM' | 'FLOOD' | 'LANDSLIDE' | 'FIRE' | 'INTENSE_WIND' | 'HIGH_TEMPERATURES' | 'OTHERS';
+    category: string;
+    description: string;
+    createdAt: string;
+    onPressFunction: () => void;
 }
 
-export default function Incident({ icon }: IncidentProps) {
+const formattedCategory = {
+    SEVERE_STORM: 'Chuva Intensa',
+    FLOOD: 'Inundação',
+    LANDSLIDE: 'Deslizamento de Terra',
+    FIRE: 'Fogo / Incêndio',
+    INTENSE_WIND: 'Vento Intenso',
+    HIGH_TEMPERATURES: 'Temperaturas Altas',
+    OTHERS: 'Outros',
+};
+
+export default function Incident({ category, createdAt, description, onPressFunction }: IncidentProps) {
     const router = useRouter();
 
-    function navigate() {
-        router.push('/incidentDetails');
+    function calculateTime() {
+        const timeOfCreation = new Date(createdAt);
+        const currentTime = new Date();
+
+        // console.log(`${timeOfCreation.getDate()}, ${timeOfCreation.getHours()} ${timeOfCreation.getMinutes()}`)
+        // console.log(`${currentTime.getDay()}, ${currentTime.getHours()} ${currentTime.getMinutes()}`)
+        const timeDifference = currentTime.getTime() - timeOfCreation.getTime();
+        // console.log(currentTime);
+
+        // Se for maior que 1 dia, mostrar dias
+        if (timeDifference > 86_400_000) return `${Math.floor(timeDifference / 86_400_000)} dia(s) atrás`;
+        else if (timeDifference > 3_600_000) return `${Math.floor(timeDifference / 3_600_000)} hora(s) atrás`;
+        else if (timeDifference > 60_000) return `${Math.floor(timeDifference / 60_000)} minuto(s) atrás`;
+        else return `${Math.floor(timeDifference / 1_000)} segundo(s) atrás`;
     }
 
     return (
-        <TouchableOpacity style={styles.incident} activeOpacity={0.45} onPress={navigate}>
+        <TouchableOpacity style={styles.incident} activeOpacity={0.45} onPress={onPressFunction}>
             <View style={styles.iconWrapper}>
-                {icon == 'wind' && <Feather name='wind' size={18} color={colors.blue_50} />}
-                {icon == 'cloud-rain' && <Feather name='cloud-rain' size={18} color={colors.blue_50} />}
-                {icon == 'water-damage' && <MaterialIcons name='water-damage' size={18} color={colors.blue_50} />}
-                {icon == 'terrain' && <MaterialIcons name='terrain' size={18} color={colors.blue_50} />}
+                {category == 'SEVERE_STORM' && <Feather name='cloud-rain' size={18} color={colors.blue_50} />}
+                {category == 'FLOOD' && <MaterialCommunityIcons name='home-flood' size={18} color={colors.blue_50} />}
+                {category == 'LANDSLIDE' && <MaterialIcons name='terrain' size={18} color={colors.blue_50} />}
+                {category == 'INTENSE_WIND' && <Feather name='wind' size={18} color={colors.blue_50} />}
+                {category == 'FIRE' && <MaterialIcons name='local-fire-department' size={18} color={colors.blue_50} />}
+                {category == 'HIGH_TEMPERATURES' && (
+                    <MaterialCommunityIcons name='sun-thermometer-outline' size={18} color={colors.blue_50} />
+                )}
+                {category == 'OTHERS' && <Feather name='tool' size={18} color={colors.blue_50} />}
             </View>
             <View style={styles.incidentText}>
                 <Text ellipsizeMode='tail' numberOfLines={1} style={styles.incidentHeader}>
-                    Deslizamento
+                    {formattedCategory[category]}
                 </Text>
                 <Text ellipsizeMode='tail' numberOfLines={1} style={styles.incidentDescription}>
-                    Após chuva intensa, deslizou na rua xabloncio sssssssss
+                    {description}
                 </Text>
-                <Text style={styles.incidentTime}>3 hrs atrás</Text>
+                <Text style={styles.incidentTime}>{calculateTime()}</Text>
             </View>
         </TouchableOpacity>
     );
