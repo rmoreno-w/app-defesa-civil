@@ -9,8 +9,15 @@ interface MultiPickerProps {
     itemsToDisplay: Array<string>;
     chosenItems: Array<number>;
     setChosenItems: React.Dispatch<React.SetStateAction<number[]>>;
+    disabled?: boolean;
 }
-export default function MultiPicker({ label, itemsToDisplay, chosenItems, setChosenItems }: MultiPickerProps) {
+export default function MultiPicker({
+    label,
+    itemsToDisplay,
+    chosenItems,
+    setChosenItems,
+    disabled,
+}: MultiPickerProps) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [displayItems, setDisplayItems] = useState<Array<string>>([...itemsToDisplay]);
     const [searchTerm, setSearchTerm] = useState('');
@@ -45,7 +52,11 @@ export default function MultiPicker({ label, itemsToDisplay, chosenItems, setCho
         <View style={styles.inputWrapper}>
             <Text style={styles.label}>{label}</Text>
 
-            <TouchableOpacity activeOpacity={0.7} style={styles.input} onPress={() => setIsModalOpen(!isModalOpen)}>
+            <TouchableOpacity
+                activeOpacity={0.7}
+                style={styles.input}
+                onPress={() => !disabled && setIsModalOpen(!isModalOpen)}
+            >
                 <Modal
                     animationType='slide'
                     transparent

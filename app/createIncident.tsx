@@ -45,6 +45,7 @@ export default function CreateIncident() {
     const [riskScale, setRiskScale] = useState<Risk>({ label: '', value: undefined });
     const [isIncidentDescriptionFocused, setIsIncidentDescriptionFocused] = useState(false);
     const [districts, setDistricts] = useState<number[]>([]);
+    const [isIncidentInTheWholeCity, setIsIncidentInTheWholeCity] = useState(false);
     const [shouldSendNotification, setShouldSendNotification] = useState(false);
     // const [emergencyServices, setEmergencyServices] = useState<Array<number>>([]);
     const [emergencyService, setEmergencyService] = useState<EmergencyService>({ label: '', value: '' });
@@ -130,7 +131,9 @@ export default function CreateIncident() {
                         category: category.value,
                         description: incidentDescription,
                         status: 'REGISTERED',
-                        district_names: districts.map((item) => importedDistricts.values[item]),
+                        district_names: isIncidentInTheWholeCity
+                            ? []
+                            : districts.map((item) => importedDistricts.values[item]),
                         risk_scale: Number(riskScale.value),
                     },
                     { headers: { Authorization: `Bearer ${user.token}` } }
@@ -175,7 +178,21 @@ export default function CreateIncident() {
                         label='Bairros'
                         chosenItems={districts}
                         setChosenItems={setDistricts}
+                        disabled={isIncidentInTheWholeCity}
                     />
+                    <TouchableOpacity
+                        style={styles.checkboxContainer}
+                        onPress={() => {
+                            setIsIncidentInTheWholeCity(!isIncidentInTheWholeCity);
+                            setDistricts([]);
+                        }}
+                        activeOpacity={0.9}
+                    >
+                        <Checkbox value={isIncidentInTheWholeCity} color={colors.blue_600} />
+                        <Text style={styles.checkboxText}>
+                            Marque este checkbox caso incidente seja relativo à Cidade Inteira
+                        </Text>
+                    </TouchableOpacity>
 
                     <Picker
                         chosenItem={category}

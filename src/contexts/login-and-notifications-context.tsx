@@ -68,16 +68,20 @@ async function listenForNotifications(user: userData) {
         // console.log(`ws:${baseNotificationsURL}/${formattedDistrictName}/ws`);
 
         webSocket.onmessage = async (content) => {
-            let jsonRecebido = JSON.parse(content.data);
+            const receivedJSON = JSON.parse(content.data);
+            let receivedIncidentObject = JSON.parse(receivedJSON.message);
 
-            // console.log(typeof jsonRecebido.message);
+            console.log(receivedIncidentObject);
+            console.log(typeof receivedIncidentObject);
+            // console.log(JSON.parse(content.data));
+            // console.log(typeof JSON.parse(content.data));
 
             // jsonRecebido.data != '' &&
             //     jsonRecebido.data != undefined &&
             await Notifications.scheduleNotificationAsync({
                 content: {
-                    body: jsonRecebido.message,
-                    title: `🚨 ${jsonRecebido.title || 'Novo incidente na sua área!'} 🚨`,
+                    title: '🚨 Novo incidente na sua área! 🚨',
+                    body: receivedIncidentObject.description,
                     priority: Notifications.AndroidNotificationPriority.HIGH,
                 },
                 trigger: {
