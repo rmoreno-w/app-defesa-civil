@@ -68,8 +68,14 @@ async function listenForNotifications(user: userData) {
         // console.log(`ws:${baseNotificationsURL}/${formattedDistrictName}/ws`);
 
         webSocket.onmessage = async (content) => {
+            // console.log(content);
+            // console.log(typeof content);
             const receivedJSON = JSON.parse(content.data);
-            let receivedIncidentObject = JSON.parse(receivedJSON.message);
+            let receivedIncidentObject: any;
+
+            // NTFY sempre envia uma notificacao vazia ao abrir canal. Se receber ela, descartar
+            if (receivedJSON.message) receivedIncidentObject = JSON.parse(receivedJSON.message);
+            else return;
 
             console.log(receivedIncidentObject);
             console.log(typeof receivedIncidentObject);
