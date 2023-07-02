@@ -56,18 +56,24 @@ async function listenForNotifications(user: userData) {
     useEffect(() => {
         if (!user.token || user.role == 'AGENT') return;
 
-        let webSocket: any;
+        let webSocketBairro: any;
+        let webSocketCidade: any;
 
         if (user.role == 'USER') {
             let formattedDistrictName = user.district.replace(' ', '');
-            webSocket = new WebSocket(`${baseNotificationsURL}/${formattedDistrictName}/ws`);
+            webSocketBairro = new WebSocket(`${baseNotificationsURL}/${formattedDistrictName}/ws`);
+            webSocketCidade = new WebSocket(`${baseNotificationsURL}/Cidade/ws`);
         } else if (user.role == 'EMERGENCY') {
             let formattedServiceName = user.name.replace(' ', '');
-            webSocket = new WebSocket(`${baseNotificationsURL}/${formattedServiceName}/ws`);
+            webSocketBairro = new WebSocket(`${baseNotificationsURL}/${formattedServiceName}/ws`);
+            webSocketCidade = new WebSocket(`${baseNotificationsURL}/Cidade/ws`);
         }
         // console.log(`ws:${baseNotificationsURL}/${formattedDistrictName}/ws`);
 
-        webSocket.onmessage = async (content) => {
+        webSocketCidade.onmessage = Notificate;
+        webSocketBairro.onmessage = Notificate;
+
+        async function Notificate(content) {
             // console.log(content);
             // console.log(typeof content);
             const receivedJSON = JSON.parse(content.data);
@@ -94,7 +100,7 @@ async function listenForNotifications(user: userData) {
                     seconds: 3,
                 },
             });
-        };
+        }
 
         const subscription = Notifications.addNotificationReceivedListener((notification) => {
             // console.log(notification.request.content.body);
@@ -109,7 +115,8 @@ async function listenForNotifications(user: userData) {
         });
 
         return () => {
-            webSocket.close();
+            webSocketBairro.close();
+            webSocketCidade.close();
             subscription.remove();
         };
     }, [user]);
